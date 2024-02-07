@@ -1,9 +1,9 @@
 from pydantic import BaseModel
-from sqlalchemy.orm import declarative_base
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import Session, relationship, sessionmaker
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
+
 
 class LocationSchema(BaseModel):
     id: int
@@ -55,8 +55,6 @@ class Board(Base):
     )
 
     location = relationship("Location", back_populates="board")
-
-
 
 
 def _run_boar_model(engine):

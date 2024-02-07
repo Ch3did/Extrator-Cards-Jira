@@ -1,12 +1,13 @@
 from datetime import datetime
 from typing import List, Optional
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+
+from pydantic import BaseModel
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from typing import List, Optional
-from pydantic import BaseModel
 
 Base = declarative_base()
+
 
 class FieldsSchema(BaseModel):
     sprint: int  # id sprint
@@ -17,10 +18,9 @@ class FieldsSchema(BaseModel):
     statuscategorychangedate: datetime
     timespent: Optional[datetime]
     resolutiondate: Optional[datetime]
-    
+
     class Config:
         from_attributes = True
-
 
 
 class IssuesSchema(BaseModel):
@@ -29,15 +29,13 @@ class IssuesSchema(BaseModel):
     self_: str
     key: str
     fields: FieldsSchema
-    
+
     class Config:
         from_attributes = True
 
 
-
-
 class Fields(Base):
-    __tablename__ = 'fields'
+    __tablename__ = "fields"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     sprint = Column(Integer)
@@ -49,16 +47,17 @@ class Fields(Base):
     timespent = Column(DateTime, nullable=True)
     resolutiondate = Column(DateTime, nullable=True)
 
+
 class Issues(Base):
-    __tablename__ = 'issues'
+    __tablename__ = "issues"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     expand = Column(String)
     self_ = Column(String)
     key = Column(String)
-    fields_id = Column(Integer, ForeignKey('fields.id'))
-    
-    fields = relationship('Fields', back_populates='issue')
+    fields_id = Column(Integer, ForeignKey("fields.id"))
+
+    fields = relationship("Fields", back_populates="issue")
 
 
 def _run_issue_model(engine):
