@@ -3,6 +3,7 @@ from src.models.board import Board, Location
 
 
 class BoardController(DatabaseController):
+    """Classe responsável pela criação e registro dos Boards"""
     def _location_factory(self, location_data: dict) -> Location:
         location = Location(
             location_id=location_data.get("projectId"),

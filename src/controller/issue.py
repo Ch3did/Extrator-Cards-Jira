@@ -5,6 +5,7 @@ from src.models.issue import Fields, Issue
 
 
 class IssueController(DatabaseController):
+    """Classe responsável pela criação e registro das Issues"""
     def _fields_factory(self, fields_dict):
         field = Fields(
             sprint=fields_dict.get("sprint")["id"],

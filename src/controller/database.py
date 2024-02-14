@@ -4,7 +4,7 @@ from database import engine
 
 
 class DatabaseController:
-    """classe responsável pelo controle da base de dados"""
+    """classe responsável pelo controle da base de dados e geração de documentos"""
 
     def __init__(self):
         self.engine = engine
