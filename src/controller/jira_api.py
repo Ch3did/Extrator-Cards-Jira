@@ -2,13 +2,20 @@ import base64
 
 import requests
 
+from src.controller.board import BoardController
+from src.controller.issue import IssueController
 
-class BaseAPI:
+
+class JiraAPI:
+    """classe responsável pelo controle da API do Jira"""
+
     def __init__(self, domain, api_token, email):
         self.domain = domain
         self._board_request = "rest/agile/1.0/board"
         self.api_token = api_token
         self.email = email
+        self.board = BoardController()
+        self.issue = IssueController()
 
     def _get_token(self):
         string = f"{self.email}:{self.api_token}"
