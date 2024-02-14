@@ -1,61 +1,43 @@
-from pydantic import BaseModel
-from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import declarative_base, relationship
+from datetime import datetime
+from typing import Optional
 
-Base = declarative_base()
-
-
-class LocationSchema(BaseModel):
-    id: int
-    displayName: str
-    projectName: str
-    projectKey: str
-    projectTypeKey: str
-    avatarURI: str
-    name: str
-
-    class Config:
-        from_attributes = True
+from sqlmodel import TIMESTAMP, Column, Field, SQLModel, text
 
 
-class BoardSchema(BaseModel):
-    id: int
-    name: str
-    self_: str
-    type_: str
-    location: LocationSchema
-
-    class Config:
-        from_attributes = True
-
-
-class Location(Base):
-    __tablename__ = "locations"
-
-    id = Column(Integer, primary_key=True, index=True)
-    displayName = Column(String(255), index=True)
-    projectName = Column(String(255), index=True)
-    projectKey = Column(String(255), index=True)
-    projectTypeKey = Column(String(255), index=True)
-    avatarURI = Column(String(255), index=True)
-    name = Column(String(255), index=True)
-
-    board = relationship("Board", back_populates="location")
-
-
-class Board(Base):
-    __tablename__ = "board"
-
-    id = Column(String(255), primary_key=True, index=True)
-    name = Column(String(255), index=True)
-    self_ = Column(String(255), index=True)
-    type_ = Column(String(255), index=True)
-    location_id = Column(
-        "location_id", Integer(), ForeignKey("locations.id"), nullable=False
+class Location(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    location_id: int
+    location_name: str
+    display_name: str
+    location_name: str
+    location_key: str
+    location_type_key: str
+    avatar_URI: str
+    colected_time_stemp: Optional[datetime] = Field(
+        sa_column=Column(
+            TIMESTAMP(timezone=True),
+            nullable=False,
+            server_default=text("CURRENT_TIMESTAMP"),
+        )
     )
 
-    location = relationship("Location", back_populates="board")
+
+class Board(SQLModel, table=True):
+    id: Optional[int] = Field(primary_key=True)
+    board_id: int
+    board_name: str
+    board_url: str
+    board_type: str
+    colected_time_stemp: Optional[datetime] = Field(
+        sa_column=Column(
+            TIMESTAMP(timezone=True),
+            nullable=False,
+            server_default=text("CURRENT_TIMESTAMP"),
+        )
+    )
+
+    location_id: Optional[int] = Field(foreign_key="location.id")
 
 
-def _run_boar_model(engine):
-    Base.metadata.create_all(engine)
+def _run_board_model(engine):
+    SQLModel.metadata.create_all(engine)
