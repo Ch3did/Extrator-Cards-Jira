@@ -1,0 +1,9 @@
+black==24.1.1
+flake8==7.0.0
+isort==5.13.2
+loguru==0.7.2
+python-dateutil==2.8.2
+python-dotenv==1.0.1
+requests==2.31.0
+SQLAlchemy==2.0.25
+sqlmodel==0.0.14
