@@ -20,7 +20,12 @@ class JiraView(JiraAPI):
         while not is_last_page:
             jira_issues = self._get_issues_info(board)
             issues = issues + self.issue.issues_factory(jira_issues)
-            is_last_page =  True if jira_issues.get("isLast") or jira_issues["maxResults"] > jira_issues["total"] else False
+            is_last_page = (
+                True
+                if jira_issues.get("isLast")
+                or jira_issues["maxResults"] > jira_issues["total"]
+                else False
+            )
         return issues
 
     def process(self):
