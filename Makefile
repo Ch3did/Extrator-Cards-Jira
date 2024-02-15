@@ -10,15 +10,15 @@ install:
 	@python3 database.py
 
 
-.PHONY: commit
+.PHONY: pre-commit
 # run send database to windows operation system
-commit:
+pre-commit:
 	@black .
 	@isort .
 	@flake8 --max-line-length 85
 
 
-.PHONY: db
+.PHONY: restart_db
 # run send database to windows operation system
 db:
 	@rm -r ./tmp/test_app.db
