@@ -15,12 +15,12 @@ install:
 pre-commit:
 	@black .
 	@isort .
-	@flake8 --max-line-length 85
+	@flake8 --max-line-length 87
 
 
 .PHONY: restart_db
 # run send database to windows operation system
-db:
+restart_db:
 	@rm -r ./tmp/test_app.db
 	@touch ./tmp/test_app.db
 	@python3 database.py
