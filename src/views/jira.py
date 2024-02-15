@@ -10,16 +10,16 @@ class JiraView(JiraAPI):
         is_last_page = False
         while not is_last_page:
             jira_boards = self._get_boards_info()
-            boards.append(self.board.board_factory(jira_boards))
-            is_last_page = jira_boards['isLast']
+            boards = boards + self.board.board_factory(jira_boards)
+            is_last_page = jira_boards["isLast"]
         return boards
 
-    def get_issues_id(self, board: int)-> List:
+    def get_issues_id(self, board: int) -> List:
         issues = []
         is_last_page = False
         while not is_last_page:
             jira_issues = self._get_issues_info(board)
-            issues.appned(self.issue.issues_factory(jira_issues["issues"]))
+            issues = issues + self.issue.issues_factory(jira_issues)
             is_last_page = jira_issues["isLast"]
         return issues
 

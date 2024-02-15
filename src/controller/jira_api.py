@@ -28,8 +28,8 @@ class JiraAPI:
         results = 100
         return {
             "Authorization": f"{self._get_token()}",
-            "startAt" : f"{page*results}",
-            "maxResults": f"{results}"
+            "startAt": f"{page*results}",
+            "maxResults": f"{results}",
         }
 
     def _get_boards_info(self, page: int = 0) -> dict:
@@ -41,7 +41,7 @@ class JiraAPI:
 
     def _get_issues_info(self, board_id: int, page: int = 0) -> dict:
         url = f"{self.domain}/rest/agile/1.0/board/{board_id}/issue"
-        headers = self._make_headers()
+        headers = self._make_headers(page)
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         return response.json()
