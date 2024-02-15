@@ -1,7 +1,5 @@
 from datetime import datetime
 
-import arrow
-
 from src.controller.database import DatabaseController
 from src.models.issue import Fields, Issue
 
@@ -11,17 +9,18 @@ class IssueController(DatabaseController):
 
     def _fields_factory(self, fields_dict):
         timespent_value = fields_dict.get("timespent")
-        resolution_date_value = fields_dict.get("resolutiondate") 
-        status_category_change_date_value =  fields_dict.get("statuscategorychangedate") 
-        
-        
+        resolution_date_value = fields_dict.get("resolutiondate")
+        status_category_change_date_value = fields_dict.get("statuscategorychangedate")
+
         field = Fields(
             sprint=fields_dict.get("sprint")["id"],
             resolution=fields_dict.get("resolution")["id"],
             work_ratio=fields_dict.get("workratio"),
             issue_type_id=fields_dict.get("issuetype")["id"],
             status_category_change_date=(
-                datetime.strptime(status_category_change_date_value[:-9], "%Y-%m-%dT%H:%M:%S")
+                datetime.strptime(
+                    status_category_change_date_value[:-9], "%Y-%m-%dT%H:%M:%S"
+                )
                 if timespent_value
                 else None
             ),
@@ -36,7 +35,6 @@ class IssueController(DatabaseController):
                 else None
             ),
         )
-        
 
         self._add_to_database(field)
         return field
