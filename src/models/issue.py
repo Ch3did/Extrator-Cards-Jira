@@ -7,12 +7,12 @@ from sqlmodel import Field, SQLModel
 class Fields(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     resolution: str
-    workratio: int
-    # customfield_10032: List[str] #TODO: Validar ocm o gui
-    issuetype: int
-    statuscategorychangedate: datetime
+    work_ratio: int
+    # customfield_10032: List[str] #TODO: Validar com o gui
+    issue_type_id: int
+    status_category_change_date: Optional[datetime]
     timespent: Optional[datetime]
-    resolutiondate: Optional[datetime]
+    resolution_date: Optional[datetime]
 
 
 class Issue(SQLModel, table=True):
