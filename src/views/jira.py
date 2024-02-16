@@ -4,8 +4,7 @@ from src.controller.jira_api import JiraAPI
 
 
 class JiraView(JiraAPI):
-    # TODO: adicionar paginação
-    def get_boards_id(self) -> List:
+    def get_boards(self) -> List:
         boards = []
         is_last_page = False
         while not is_last_page:
@@ -14,22 +13,21 @@ class JiraView(JiraAPI):
             is_last_page = jira_boards["isLast"]
         return boards
 
-    def get_issues_id(self, board: int) -> List:
+    def get_issues(self, board: int) -> None:
         issues = []
         is_last_page = False
         while not is_last_page:
             jira_issues = self._get_issues_info(board)
-            issues = issues + self.issue.issues_factory(jira_issues)
+            self.issue.issues_factory(jira_issues)
             is_last_page = (
                 True
                 if jira_issues.get("isLast")
                 or jira_issues["maxResults"] > jira_issues["total"]
                 else False
             )
-        return issues
 
     def process(self):
-        boards_id_list = self.get_boards_id()
+        boards_id_list = self.get_boards()
         for board in boards_id_list:
-            issues_id_list = self.get_issues_id(board)
+            issues_id_list = self.get_issues(board)
         return True if issues_id_list else False
