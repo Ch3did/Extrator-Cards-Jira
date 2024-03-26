@@ -1,26 +1,41 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlmodel import Field, SQLModel
-
-
-class Fields(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    resolution: Optional[str]
-    work_ratio: int
-    # customfield_10032: List[str] #TODO: Validar com o gui
-    issue_type_id: Optional[int]
-    status_category_change_date: Optional[datetime]
-    timespent: Optional[datetime]
-    resolution_date: Optional[datetime]
+from sqlmodel import TIMESTAMP, Column, Field, SQLModel, text
 
 
 class Issue(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
+    board_id: int
     expand: str
-    self_: str
+    status: str
+    self_url: str
     key: str
-    fields_id: Optional[int] = Field(foreign_key="fields.id")
+    issue_type: str
+    issue_type_id: str
+    summary: str
+    priority_name: str
+    epic_id: Optional[int]
+    epic_key: Optional[str]
+    epic_name: Optional[str]
+    epic_summary: Optional[str]
+    sprint: Optional[str]
+    work_ratio: Optional[int]
+    reporter_name: Optional[str]
+    reportar_mail: Optional[str]
+    creators_name: Optional[str]
+    creators_mail: Optional[str]
+    progress: Optional[str]
+    status_category_change_date: Optional[datetime]
+    timespent: Optional[datetime]
+    resolution_date: Optional[datetime]
+    colected_time_stemp: Optional[datetime] = Field(
+        sa_column=Column(
+            TIMESTAMP(timezone=True),
+            nullable=False,
+            server_default=text("CURRENT_TIMESTAMP"),
+        )
+    )
 
 
 def _run_issue_model(engine):
