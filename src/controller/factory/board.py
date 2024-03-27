@@ -20,15 +20,15 @@ class BoardController(DatabaseController):
     def board_factory(self, api_response: dict):
         boad_id_list = []
         for board_dict in api_response["values"]:
-
-            location = self._location_factory(board_dict.get("location"))
-            board = Board(
-                board_id=board_dict.get("id"),
-                board_name=board_dict.get("name"),
-                board_url=board_dict.get("self"),
-                board_type=board_dict.get("type"),
-                location_id=location.id,
-            )
-            boad_id_list.append(board.board_id)
-            self._add_to_database(board)
+            if board_dict['type'] == 'scrum':
+                location = self._location_factory(board_dict.get("location"))
+                board = Board(
+                    board_id=board_dict.get("id"),
+                    board_name=board_dict.get("name"),
+                    board_url=board_dict.get("self"),
+                    board_type=board_dict.get("type"),
+                    location_id=location.id,
+                )
+                boad_id_list.append(board.board_id)
+                self._add_to_database(board)
         return boad_id_list
