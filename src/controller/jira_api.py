@@ -18,6 +18,7 @@ class JiraAPI:
         self.board = BoardController()
         self.issue = IssueController()
         self.sprint = SprintController()
+        self._status = "In Progress"
 
     def _get_token(self) -> str:
         string = f"{self.email}:{self.api_token}"

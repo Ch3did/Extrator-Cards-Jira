@@ -13,5 +13,6 @@ if __name__ == "__main__":
         logger.error(error)
         msg = traceback.format_exc()
         logger.error(msg)
+        jira._status = "Fail"
     finally:
-        logger.info("Process has finished!")
+        logger.info(f"Process has finished! {jira._status}")

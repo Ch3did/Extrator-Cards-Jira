@@ -55,3 +55,4 @@ class JiraView(JiraAPI):
             logger.info(f"Running JiraAPI for board {board}")
             self.get_sprints(board)
             self.get_issues(board)
+            self._status = "Success"
