@@ -28,7 +28,7 @@ class JiraAPI:
 
     def _make_headers(self) -> dict:
         return {"Authorization": f"{self._get_token()}"}
-        
+
     def _make_params(self, page: int) -> dict:
         results = 100
         return {

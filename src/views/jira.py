@@ -28,7 +28,8 @@ class JiraView(JiraAPI):
             self.issue.issues_factory(jira_issues, board)
             is_last_page = (
                 True
-                if jira_issues.get("startAt") + jira_issues.get("maxResults") >= jira_issues.get("total")
+                if jira_issues.get("startAt") + jira_issues.get("maxResults")
+                >= jira_issues.get("total")
                 else False
             )
             page += 1

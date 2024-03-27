@@ -2,7 +2,7 @@ import traceback
 
 from loguru import logger
 
-from src.env import API_TOKEN, DOMAIN, EMAIL, BOARDS
+from src.env import API_TOKEN, DOMAIN, EMAIL
 from src.views.jira import JiraView
 
 if __name__ == "__main__":
