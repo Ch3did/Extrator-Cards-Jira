@@ -2,7 +2,7 @@ import traceback
 
 from loguru import logger
 
-from src.env import API_TOKEN, DOMAIN, EMAIL
+from src.env import API_TOKEN, DOMAIN, EMAIL, BOARDS
 from src.views.jira import JiraView
 
 if __name__ == "__main__":
@@ -13,3 +13,5 @@ if __name__ == "__main__":
         logger.error(error)
         msg = traceback.format_exc()
         logger.error(msg)
+    finally:
+        logger.info("Process has finished!")
