@@ -13,7 +13,7 @@ class JiraView(JiraAPI):
         page = 0
         while not is_last_page:
             jira_boards = self._get_boards_info(page)
-            boards = boards + self.board.board_factory(jira_boards)
+            boards += self.board.board_factory(jira_boards)
             is_last_page = jira_boards["isLast"]
             page += 1
         logger.info(f"Found {len(boards)} boards...")
@@ -48,7 +48,7 @@ class JiraView(JiraAPI):
             )
             page += 1
 
-    def process(self, board_name_list) -> None:
+    def process(self) -> None:
         boards_id_list = self.get_boards()
         for board in boards_id_list:
             logger.info(f"Running JiraAPI for board {board}")
