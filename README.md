@@ -21,7 +21,7 @@ Para instalar o Animated Bassoon, execute o seguinte comando:
 
 > make install
 
-# Uso:
+## Uso:
 
 Para executar o Animated Bassoon, utilize o seguinte comando:
 
@@ -35,7 +35,7 @@ Certifique-se de configurar corretamente as credenciais do Jira no arquivo .env 
 
 Contribuições são bem-vindas! Sinta-se à vontade para enviar pull requests e reportar problemas.
 
-# Licença:
+## Licença:
 
 Este projeto é licenciado sob a MIT License.
 
