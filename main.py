@@ -15,4 +15,4 @@ if __name__ == "__main__":
         logger.error(msg)
         jira._status = "Fail"
     finally:
-        logger.info(f"Process has finished! {jira._status}")
+        logger.info(f"Process has finished! Status: {jira._status}")
