@@ -21,6 +21,11 @@ class JiraAPI:
         self._status = "In Progress"
 
     def _get_token(self) -> str:
+        """Encode the email and apiToken to base 64 and return as token
+
+        Returns:
+            str: Authentication token string
+        """        
         string = f"{self.email}:{self.api_token}"
         sample_string_bytes = string.encode("ascii")
         base64_bytes = base64.b64encode(sample_string_bytes)

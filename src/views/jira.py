@@ -3,10 +3,12 @@ from typing import List
 from loguru import logger
 
 from src.controller.jira_api import JiraAPI
+from src.models.board import Board
 
 
 class JiraView(JiraAPI):
-    def get_boards(self) -> List:
+    def get_boards(self) -> List[Board]:
+        """Handle the logic for get boards and pagination"""
         logger.info("Getting boards...")
         boards = []
         is_last_page = False
@@ -20,6 +22,7 @@ class JiraView(JiraAPI):
         return boards
 
     def get_issues(self, board: int) -> None:
+        """Handle the logic for get Issues and pagination"""
         logger.info("Getting Issues...")
         is_last_page = False
         page = 0
@@ -35,6 +38,7 @@ class JiraView(JiraAPI):
             page += 1
 
     def get_sprints(self, board: int) -> None:
+        """Handle the logic for get Issues and pagination"""
         logger.info("Getting Sprints...")
         is_last_page = False
         page = 0
