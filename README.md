@@ -13,7 +13,7 @@ O Animated Bassoon é uma aplicação Python desenvolvida para extrair dados do 
 
 ## Configuração:
 
-Durante a execução do código, um arquivo chamado .env será criado. Caso não seja alterado o nome da variável database_url neste arquivo, o nome do banco de dados será test_app.db e ele estará localizado no diretório .tmp.
+Durante a execução do código, um arquivo chamado .env será criado. Caso não seja alterado o nome da variável database_url neste arquivo, o nome do banco de dados será `"test_app.db"` e ele estará localizado no diretório `.tmp`.
 
 ## Instalação:
 
