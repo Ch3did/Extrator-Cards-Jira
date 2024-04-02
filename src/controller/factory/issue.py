@@ -18,6 +18,11 @@ class IssueController(DatabaseController):
                 if fields_dict.get("timespent")
                 else None
             )
+            creation_date_value = (
+                datetime.strptime(fields_dict.get("created")[:-9], "%Y-%m-%dT%H:%M:%S")
+                if fields_dict.get("created")
+                else None
+            )
             resolution_date_value = (
                 datetime.strptime(
                     fields_dict.get("resolutiondate")[:-9], "%Y-%m-%dT%H:%M:%S"
@@ -33,6 +38,11 @@ class IssueController(DatabaseController):
                 if fields_dict.get("statuscategorychangedate")
                 else None
             )
+
+            closed_sprint = None
+            if sprints := fields_dict.get("closedSprints"):
+                closed_sprint = f"{[item['id'] for item in sprints]}"
+
             epic = fields_dict["epic"] if fields_dict.get("epic") else {}
             sprint = fields_dict["sprint"] if fields_dict.get("sprint") else {}
             creator = fields_dict["creator"] if fields_dict.get("creator") else {}
@@ -67,6 +77,8 @@ class IssueController(DatabaseController):
                 status_category_change_date=status_category_change_date_value,
                 timespent=timespent_value,
                 resolution_date=resolution_date_value,
+                creation_date=creation_date_value,
+                closed_sprint=closed_sprint,
             )
 
             self._add_to_database(issue)

@@ -29,6 +29,8 @@ class Issue(SQLModel, table=True):
     status_category_change_date: Optional[datetime]
     timespent: Optional[datetime]
     resolution_date: Optional[datetime]
+    creation_date: Optional[datetime]
+    closed_sprint: Optional[str]
     colected_time_stemp: Optional[datetime] = Field(
         sa_column=Column(
             TIMESTAMP(timezone=True),
