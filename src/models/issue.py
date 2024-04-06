@@ -6,6 +6,7 @@ from sqlmodel import TIMESTAMP, Column, Field, SQLModel, text
 
 class Issue(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
+    issue_id: int
     board_id: int
     expand: str
     status: str
