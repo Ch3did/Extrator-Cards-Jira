@@ -54,7 +54,7 @@ class IssueController(DatabaseController):
             )
 
             issue = Issue(
-                issue_id = issue.get("id"),
+                issue_id=issue.get("id"),
                 board_id=board,
                 expand=issue.get("expand"),
                 status=fields_dict["status"].get("name"),
