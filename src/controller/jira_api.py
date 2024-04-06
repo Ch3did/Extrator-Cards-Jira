@@ -12,7 +12,6 @@ class JiraAPI:
 
     def __init__(self, domain, api_token, email):
         self.domain = domain
-        self._board_request = "rest/agile/1.0/board"
         self.api_token = api_token
         self.email = email
         self.board = BoardController()
@@ -42,26 +41,24 @@ class JiraAPI:
             "maxResults": f"{results}",
         }
 
-    def _get_boards_info(self, page: int) -> dict:
-        url = f"{self.domain}rest/agile/1.0/board/"
+    def _make_request(self, url: str, page: int) -> dict:
         headers = self._make_headers()
         params = self._make_params(page)
         response = requests.get(url, headers=headers, params=params)
         response.raise_for_status()
         return response.json()
+
+    def _get_boards_info(self, page: int) -> dict:
+        self._make_request(f"{self.domain}/board/", page)
 
     def _get_issues_info(self, board_id: int, page: int) -> dict:
-        url = f"{self.domain}/rest/agile/1.0/board/{board_id}/issue"
-        headers = self._make_headers()
-        params = self._make_params(page)
-        response = requests.get(url, headers=headers, params=params)
-        response.raise_for_status()
-        return response.json()
+        self._make_request(f"{self.domain}/board/{board_id}/issue", page)
 
     def _get_sprints_info(self, board_id, page: int) -> dict:
-        url = f"{self.domain}/rest/agile/1.0/board/{board_id}/sprint"
-        headers = self._make_headers()
-        params = self._make_params(page)
-        response = requests.get(url, headers=headers, params=params)
-        response.raise_for_status()
-        return response.json()
+        self._make_request(f"{self.domain}/board/{board_id}/sprint", page)
+
+    # def _get_epics_basic_info(self, board_id, page: int) -> dict:
+    #     url = f"{self.domain}/rest/agile/1.0/board/{board_id}/epic"
+
+    # def _get_epic_info(self, epic_id, page: int) -> dict:
+    #     url = f"{self.domain}/rest//agile/1.0/epic/{epic_id}"
