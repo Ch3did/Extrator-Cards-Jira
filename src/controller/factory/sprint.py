@@ -16,8 +16,8 @@ class SprintController(DatabaseController):
                 else None
             )
             start_date = (
-                datetime.strptime(sprint.get("start_date")[:-9], "%Y-%m-%dT%H:%M:%S")
-                if sprint.get("start_date")
+                datetime.strptime(sprint.get("startDate")[:-5], "%Y-%m-%dT%H:%M:%S")
+                if sprint.get("startDate")
                 else None
             )
             end_date = (
