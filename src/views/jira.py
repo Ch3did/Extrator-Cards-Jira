@@ -29,6 +29,7 @@ class JiraView(JiraAPI):
         while not is_last_page:
             jira_issues = self._get_issues_info(board, page)
             self.issue.issues_factory(jira_issues, board)
+            self.get_changelog(jira_issues)
             is_last_page = (
                 True
                 if jira_issues.get("startAt") + jira_issues.get("maxResults")
@@ -49,6 +50,22 @@ class JiraView(JiraAPI):
                 True
                 if jira_sprints.get("isLast")
                 or jira_sprints["maxResults"] > jira_sprints["total"]
+                else False
+            )
+            page += 1
+
+    def get_changelog(self, issue_dict: dict):
+        logger.info("Getting changelog's...")
+        is_last_page = False
+        page = 0
+        while not is_last_page:
+            for issue in issue_dict["issues"]:
+                jira_changelog = self._get_changelog_info(issue["id"], page)
+                self.changelog.changelog_factory(jira_changelog)
+                is_last_page = (
+                True
+                if jira_changelog.get("isLast")
+                or jira_changelog["maxResults"] > jira_changelog["total"]
                 else False
             )
             page += 1
