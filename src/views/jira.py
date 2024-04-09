@@ -55,7 +55,6 @@ class JiraView(JiraAPI):
             page += 1
 
     def get_changelog(self, issue_dict: dict):
-        logger.info("Getting changelog's...")
         is_last_page = False
         page = 0
         while not is_last_page:

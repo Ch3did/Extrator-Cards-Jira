@@ -1,3 +1,4 @@
+from loguru import logger
 from sqlmodel import Session, select
 
 from database import engine
@@ -27,6 +28,7 @@ class DatabaseController:
         )
         result = self.session.exec(data)
         if not bool(result.first()):
+            logger.info(f"Saving board: {board_object.board_name}...")
             self._add_to_database(board_object)
 
     def save_issue(self, issue_object: Issue) -> str:
@@ -39,6 +41,7 @@ class DatabaseController:
         )
         result = self.session.exec(data)
         if not bool(result.first()):
+            logger.info(f"Saving issue: {issue_object.key}...")
             self._add_to_database(issue_object)
 
     def save_sprint(self, sprint_object: Sprint) -> str:
@@ -49,6 +52,7 @@ class DatabaseController:
         )
         result = self.session.exec(data)
         if not bool(result.first()):
+            logger.info(f"Saving Sprint: {sprint_object.sprint_name}...")
             self._add_to_database(sprint_object)
 
     def save_changelog(self, changelog_object: Changelog) -> str:
@@ -62,4 +66,5 @@ class DatabaseController:
         )
         result = self.session.exec(data)
         if not bool(result.first()):
+            logger.info(f"Saving Changelog: {changelog_object.issue_id}...")
             self._add_to_database(changelog_object)
