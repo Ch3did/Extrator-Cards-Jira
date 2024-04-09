@@ -16,7 +16,6 @@ class DatabaseController:
         self.session = Session(engine)
 
     def _add_to_database(self, data):
-        # TODO: Adicionar validação de dado duplicado com base no dia
         self.session.add(data)
         self.session.commit()
 
