@@ -34,21 +34,20 @@ Certifique-se de configurar corretamente as credenciais do Jira no arquivo .env 
 
 ## Objetos criados e suas estruturas
 
-|----------------------|----------------------|-----------------------------------------|
+### Board
+
 | Nome do Campo        | Tipo de Dado         | Descrição                               |
 |----------------------|----------------------|-----------------------------------------|
-
-> Board
-|---------------------------------------------------------------------------------------|
 | id                   | int (Opcional)       | Chave primária da tabela                |
 | board_id             | int                  | ID do board                             |
 | board_name           | str                  | Nome do board                           |
 | board_url            | str                  | URL do board                            |
 | board_type           | str                  | Tipo do board                           |
 | colected_time_stemp  | datetime (Opcional)  | Timestamp de coleta (com timezone)      |
-|_______________________________________________________________________________________|
 
-> Changelog
+### Changelog
+
+| Nome do Campo        | Tipo de Dado         | Descrição                               |
 |----------------------|----------------------|-----------------------------------------|
 | id                   | int (Opcional)       | Chave primária da tabela                |
 | issue_id             | int                  | ID do issue associado ao changelog      |
@@ -59,9 +58,10 @@ Certifique-se de configurar corretamente as credenciais do Jira no arquivo .env 
 | old_value            | str (Opcional)       | Valor antigo                            |
 | new_value            | str (Opcional)       | Novo valor                              |
 | colected_time_stemp  | datetime (Opcional)  | Timestamp de coleta (com timezone)      |
-|_______________________________________________________________________________________|
 
-> Issue
+### Issue
+
+| Nome do Campo               | Tipo de Dado         | Descrição                               |
 |-----------------------------|----------------------|-----------------------------------------|
 | id                          | int (Opcional)       | Chave primária da tabela                |
 | issue_id                    | int                  | ID do issue                             |
@@ -91,10 +91,11 @@ Certifique-se de configurar corretamente as credenciais do Jira no arquivo .env 
 | creation_date               | datetime (Opcional)  | Data de criação                         |
 | closed_sprint               | str (Opcional)       | Sprint fechada                          |
 | colected_time_stemp         | datetime (Opcional)  | Timestamp de coleta (com timezone)      |
-|-----------------------------|----------------------|-----------------------------------------|
 
-> Sprint
-|---------------------------------------------------------------------------------------|
+### Sprint
+
+| Nome do Campo        | Tipo de Dado         | Descrição                               |
+|----------------------|----------------------|-----------------------------------------|
 | id                   | int (Opcional)       | Chave primária da tabela                |
 | sprint_id            | int                  | ID da sprint                            |
 | status               | str                  | Status da sprint                        |
@@ -106,7 +107,7 @@ Certifique-se de configurar corretamente as credenciais do Jira no arquivo .env 
 | created_date         | datetime (Opcional)  | Data de criação da sprint               |
 | end_date             | datetime (Opcional)  | Data de término da sprint               |
 | colected_time_stemp  | datetime (Opcional)  | Timestamp de coleta (com timezone)      |
-|----------------------|----------------------|-----------------------------------------|
+
 
 
 ## Contribuição:
