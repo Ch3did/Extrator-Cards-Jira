@@ -15,7 +15,7 @@ class DatabaseController:
         self.engine = engine
         self.session = Session(engine)
 
-    def _add_to_database(self, data):
+    def _add_to_database(self, data: object) -> None:
         "Save and commit objects on the database"
         self.session.add(data)
         self.session.commit()
