@@ -63,11 +63,11 @@ class JiraView(JiraAPI):
                 jira_changelog = self._get_changelog_info(issue["id"], page)
                 self.changelog.changelog_factory(jira_changelog)
                 is_last_page = (
-                True
-                if jira_changelog.get("isLast")
-                or jira_changelog["maxResults"] > jira_changelog["total"]
-                else False
-            )
+                    True
+                    if jira_changelog.get("isLast")
+                    or jira_changelog["maxResults"] > jira_changelog["total"]
+                    else False
+                )
             page += 1
 
     def process(self) -> None:

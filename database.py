@@ -2,9 +2,9 @@ from sqlmodel import create_engine
 
 from src.env import DATABASE_URL, DEBUG
 from src.models.board import _run_board_model
+from src.models.changelog import _run_changelog_model
 from src.models.issue import _run_issue_model
 from src.models.sprint import _run_sprint_model
-from src.models.changelog import _run_changelog_model
 
 engine = create_engine(DATABASE_URL, echo=bool(DEBUG))
 

@@ -64,7 +64,9 @@ class JiraAPI:
         )
 
     def _get_changelog_info(self, issue_id: dict, page: int) -> dict:
-        return self._make_request(f"{self.domain}api/3/issue/{issue_id}/changelog", page)
+        return self._make_request(
+            f"{self.domain}api/3/issue/{issue_id}/changelog", page
+        )
 
     # def _get_epics_basic_info(self, board_id, page: int) -> dict:
     #     url = f"{self.domain}/rest/agile/1.0/board/{board_id}/epic"
