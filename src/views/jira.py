@@ -60,7 +60,7 @@ class JiraView(JiraAPI):
         while not is_last_page:
             for issue in issue_dict["issues"]:
                 jira_changelog = self._get_changelog_info(issue["id"], page)
-                self.changelog.changelog_factory(jira_changelog)
+                self.changelog.changelog_factory(jira_changelog, issue["id"])
                 is_last_page = (
                     True
                     if jira_changelog.get("isLast")

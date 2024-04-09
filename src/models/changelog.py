@@ -7,6 +7,7 @@ from sqlmodel import TIMESTAMP, Column, Field, SQLModel, text
 class Changelog(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     issue_id: int
+    change_id: int
     creator: str
     change_date: datetime
     change_field: str

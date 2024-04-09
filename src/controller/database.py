@@ -62,6 +62,7 @@ class DatabaseController:
             Issue.issue_id == issue_object.issue_id,
             Issue.board_id == issue_object.board_id,
             Issue.self_url == issue_object.self_url,
+            Issue.status == issue_object.status,
             Issue.key == issue_object.key,
             Issue.creators_name == issue_object.creators_name,
         )

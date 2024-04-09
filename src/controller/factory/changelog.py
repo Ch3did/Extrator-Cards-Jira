@@ -7,11 +7,12 @@ from src.models.changelog import Changelog
 class ChangelogController(DatabaseController):
     """Classe responsável pela criação e registro dos Changelogs"""
 
-    def changelog_factory(self, changelog_dict) -> Changelog:
+    def changelog_factory(self, changelog_dict: dict, issue_id: int) -> Changelog:
         for change in changelog_dict["values"]:
 
             changelog = Changelog(
-                issue_id=change["id"],
+                issue_id=issue_id,
+                change_id=change["id"],
                 creator=change["author"]["displayName"],
                 change_date=datetime.strptime(
                     change["created"][:-9], "%Y-%m-%dT%H:%M:%S"
