@@ -82,4 +82,4 @@ class IssueController(DatabaseController):
                 closed_sprint=closed_sprint,
             )
 
-            self._add_to_database(issue)
+            self.save_issue(issue)

@@ -16,5 +16,5 @@ class BoardController(DatabaseController):
                     board_type=board_dict.get("type"),
                 )
                 boad_id_list.append(board.board_id)
-                self._add_to_database(board)
+                self.save_board(board)
         return boad_id_list
