@@ -16,10 +16,23 @@ class DatabaseController:
         self.session = Session(engine)
 
     def _add_to_database(self, data):
+        "Save and commit objects on the database"
         self.session.add(data)
         self.session.commit()
 
-    def save_board(self, board_object: Board) -> str:
+    def save_board(self, board_object: Board) -> None:
+        """Usa o Objeto Board recem criado para validar duplicidade
+            antes de salvar o dado
+
+        Args:
+            board_object (Board): Objeto Board para validação
+
+        campos usados para comparação:
+        - Board.board_name
+        - Board.board_url
+        - Board.board_type
+
+        """
         data = select(Board).where(
             Board.board_name == board_object.board_name,
             Board.board_url == board_object.board_url,
@@ -30,7 +43,21 @@ class DatabaseController:
             logger.info(f"Saving board: {board_object.board_name}...")
             self._add_to_database(board_object)
 
-    def save_issue(self, issue_object: Issue) -> str:
+    def save_issue(self, issue_object: Issue) -> None:
+        """Usa o Objeto Issue recem criado para validar duplicidade
+            antes de salvar o dado
+
+        Args:
+            issue_object (Issue): Objeto Issue para validação
+
+        campos usados para comparação:
+        - Issue.issue_id
+        - Issue.board_id
+        - Issue.self_url
+        - Issue.key
+        - Issue.creators_name
+
+        """
         data = select(Issue).where(
             Issue.issue_id == issue_object.issue_id,
             Issue.board_id == issue_object.board_id,
@@ -43,7 +70,19 @@ class DatabaseController:
             logger.info(f"Saving issue: {issue_object.key}...")
             self._add_to_database(issue_object)
 
-    def save_sprint(self, sprint_object: Sprint) -> str:
+    def save_sprint(self, sprint_object: Sprint) -> None:
+        """Usa o Objeto Sprint recem criado para validar duplicidade
+            antes de salvar o dado
+
+        Args:
+            sprint_object (Sprint): Objeto Sprint para validação
+
+        campos usados para comparação:
+        - Sprint.sprint_id
+        - Sprint.self_url
+        - Sprint.sprint_name
+
+        """
         data = select(Sprint).where(
             Sprint.sprint_id == sprint_object.sprint_id,
             Sprint.self_url == sprint_object.self_url,
@@ -54,7 +93,22 @@ class DatabaseController:
             logger.info(f"Saving Sprint: {sprint_object.sprint_name}...")
             self._add_to_database(sprint_object)
 
-    def save_changelog(self, changelog_object: Changelog) -> str:
+    def save_changelog(self, changelog_object: Changelog) -> None:
+        """Usa o Objeto Changelog recem criado para validar duplicidade
+            antes de salvar o dado
+
+        Args:
+            changelog_object (Changelog): Objeto Changelog para validação
+
+        campos usados para comparação:
+            - Changelog.issue_id
+            - Changelog.creator
+            - Changelog.change_date
+            - Changelog.change_field
+            - Changelog.old_value
+            - Changelog.new_value
+
+        """
         data = select(Changelog).where(
             Changelog.issue_id == changelog_object.issue_id,
             Changelog.creator == changelog_object.creator,
