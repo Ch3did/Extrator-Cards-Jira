@@ -7,6 +7,7 @@ install:
 	@echo ">>> Installing Dependences"
 	@pip3 install -r requirements.txt
 	@echo ">>> Creating Database"
+	@touch ./tmp/test_app.db
 	@python3 database.py
 
 
