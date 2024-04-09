@@ -43,4 +43,4 @@ class SprintController(DatabaseController):
                 end_date=end_date,
             )
 
-            self._add_to_database(sprint)
+            self.save_sprint(sprint)

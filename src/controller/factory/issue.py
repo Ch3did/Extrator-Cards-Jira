@@ -54,7 +54,7 @@ class IssueController(DatabaseController):
             )
 
             issue = Issue(
-                issue_id = issue.get("id"),
+                issue_id=issue.get("id"),
                 board_id=board,
                 expand=issue.get("expand"),
                 status=fields_dict["status"].get("name"),
@@ -82,4 +82,4 @@ class IssueController(DatabaseController):
                 closed_sprint=closed_sprint,
             )
 
-            self._add_to_database(issue)
+            self.save_issue(issue)

@@ -3,6 +3,7 @@ import base64
 import requests
 
 from src.controller.factory.board import BoardController
+from src.controller.factory.changelog import ChangelogController
 from src.controller.factory.issue import IssueController
 from src.controller.factory.sprint import SprintController
 
@@ -12,12 +13,12 @@ class JiraAPI:
 
     def __init__(self, domain, api_token, email):
         self.domain = domain
-        self._board_request = "rest/agile/1.0/board"
         self.api_token = api_token
         self.email = email
         self.board = BoardController()
         self.issue = IssueController()
         self.sprint = SprintController()
+        self.changelog = ChangelogController()
         self._status = "In Progress"
 
     def _get_token(self) -> str:
@@ -42,26 +43,33 @@ class JiraAPI:
             "maxResults": f"{results}",
         }
 
-    def _get_boards_info(self, page: int) -> dict:
-        url = f"{self.domain}rest/agile/1.0/board/"
+    def _make_request(self, url: str, page: int = 0) -> dict:
         headers = self._make_headers()
         params = self._make_params(page)
         response = requests.get(url, headers=headers, params=params)
         response.raise_for_status()
         return response.json()
+
+    def _get_boards_info(self, page: int) -> dict:
+        return self._make_request(f"{self.domain}agile/1.0/board/", page)
 
     def _get_issues_info(self, board_id: int, page: int) -> dict:
-        url = f"{self.domain}/rest/agile/1.0/board/{board_id}/issue"
-        headers = self._make_headers()
-        params = self._make_params(page)
-        response = requests.get(url, headers=headers, params=params)
-        response.raise_for_status()
-        return response.json()
+        return self._make_request(
+            f"{self.domain}agile/1.0/board/{board_id}/issue", page
+        )
 
     def _get_sprints_info(self, board_id, page: int) -> dict:
-        url = f"{self.domain}/rest/agile/1.0/board/{board_id}/sprint"
-        headers = self._make_headers()
-        params = self._make_params(page)
-        response = requests.get(url, headers=headers, params=params)
-        response.raise_for_status()
-        return response.json()
+        return self._make_request(
+            f"{self.domain}agile/1.0/board/{board_id}/sprint", page
+        )
+
+    def _get_changelog_info(self, issue_id: dict, page: int) -> dict:
+        return self._make_request(
+            f"{self.domain}api/3/issue/{issue_id}/changelog", page
+        )
+
+    # def _get_epics_basic_info(self, board_id, page: int) -> dict:
+    #     url = f"{self.domain}/rest/agile/1.0/board/{board_id}/epic"
+
+    # def _get_epic_info(self, epic_id, page: int) -> dict:
+    #     url = f"{self.domain}/rest//agile/1.0/epic/{epic_id}"
