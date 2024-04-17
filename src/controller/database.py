@@ -50,26 +50,29 @@ class DatabaseController:
         Args:
             issue_object (Issue): Objeto Issue para validação
 
-        campos usados para comparação:
-        - Issue.issue_id
-        - Issue.board_id
-        - Issue.self_url
-        - Issue.key
-        - Issue.creators_name
 
         """
-        data = select(Issue).where(
-            Issue.issue_id == issue_object.issue_id,
-            Issue.board_id == issue_object.board_id,
-            Issue.self_url == issue_object.self_url,
-            Issue.status == issue_object.status,
-            Issue.key == issue_object.key,
-            Issue.creators_name == issue_object.creators_name,
-        )
-        result = self.session.exec(data)
-        if not bool(result.first()):
-            logger.info(f"Saving issue: {issue_object.key}...")
-            self._add_to_database(issue_object)
+        logger.info(f"Saving issue: {issue_object.key}...")
+        self._add_to_database(issue_object)
+        
+        # OUTDATED Filter:
+        # campos usados para comparação:
+        # - Issue.issue_id
+        # - Issue.board_id
+        # - Issue.self_url
+        # - Issue.key
+        # - Issue.creators_name
+        
+        # data = select(Issue).where(
+        #     Issue.issue_id == issue_object.issue_id,
+        #     Issue.board_id == issue_object.board_id,
+        #     Issue.self_url == issue_object.self_url,
+        #     Issue.status == issue_object.status,
+        #     Issue.key == issue_object.key,
+        #     Issue.creators_name == issue_object.creators_name,
+        # )
+        # result = self.session.exec(data)
+        # if not bool(result.first()):
 
     def save_sprint(self, sprint_object: Sprint) -> None:
         """Usa o Objeto Sprint recem criado para validar duplicidade
