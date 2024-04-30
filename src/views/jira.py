@@ -69,7 +69,7 @@ class JiraView(JiraAPI):
                 )
             page += 1
 
-    def create_deleted_cards(self):
+    def get_deleted_cards(self):
         self.deleted_cards.deleted_cards_factory()
 
     def process(self) -> None:
@@ -78,5 +78,5 @@ class JiraView(JiraAPI):
             logger.info(f"Running JiraAPI for board {board}")
             self.get_sprints(board)
             self.get_issues(board)
-            self.create_deleted_cards()
+            self.get_deleted_cards()
             self._status = "Success"
