@@ -4,6 +4,7 @@ import requests
 
 from src.controller.factory.board import BoardController
 from src.controller.factory.changelog import ChangelogController
+from src.controller.factory.deleted_cards import DeletedCards
 from src.controller.factory.issue import IssueController
 from src.controller.factory.sprint import SprintController
 
@@ -19,6 +20,7 @@ class JiraAPI:
         self.issue = IssueController()
         self.sprint = SprintController()
         self.changelog = ChangelogController()
+        self.deleted_cards = DeletedCards()
         self._status = "In Progress"
 
     def _get_token(self) -> str:
