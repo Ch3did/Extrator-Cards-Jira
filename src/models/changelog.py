@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional
 
 from sqlmodel import TIMESTAMP, Column, Field, SQLModel, text
@@ -6,20 +6,14 @@ from sqlmodel import TIMESTAMP, Column, Field, SQLModel, text
 
 class Changelog(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    issue_id: int
-    change_id: int
+    issue_id: Optional[int]
+    change_id: Optional[int]
     creator: str
     change_date: datetime
     change_field: str
     old_value: Optional[str]
     new_value: Optional[str]
-    colected_time_stemp: Optional[datetime] = Field(
-        sa_column=Column(
-            TIMESTAMP(timezone=True),
-            nullable=False,
-            server_default=text("CURRENT_TIMESTAMP"),
-        )
-    )
+    colected_date: date = date.today()
 
 
 def _run_changelog_model(engine):

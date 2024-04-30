@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional
 
 from sqlmodel import TIMESTAMP, Column, Field, SQLModel, text
@@ -15,13 +15,7 @@ class Sprint(SQLModel, table=True):
     resolution_date: Optional[datetime]  # resolução (sprint completa)
     created_date: Optional[datetime]  # criação
     end_date: Optional[datetime]  # fechamento
-    colected_time_stemp: Optional[datetime] = Field(
-        sa_column=Column(
-            TIMESTAMP(timezone=True),
-            nullable=False,
-            server_default=text("CURRENT_TIMESTAMP"),
-        )
-    )
+    colected_date: date = date.today()
 
 
 def _run_sprint_model(engine):

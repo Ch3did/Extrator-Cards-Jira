@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional
 
 from sqlmodel import TIMESTAMP, Column, Field, SQLModel, text
@@ -8,7 +8,6 @@ class Issue(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     issue_id: int
     board_id: int
-    expand: str
     status: str
     self_url: str
     key: str
@@ -16,7 +15,6 @@ class Issue(SQLModel, table=True):
     issue_type_id: str
     summary: str
     priority_name: str
-    epic_id: Optional[int]
     epic_key: Optional[str]
     epic_name: Optional[str]
     epic_summary: Optional[str]
@@ -32,13 +30,7 @@ class Issue(SQLModel, table=True):
     resolution_date: Optional[datetime]
     creation_date: Optional[datetime]
     closed_sprint: Optional[str]
-    colected_time_stemp: Optional[datetime] = Field(
-        sa_column=Column(
-            TIMESTAMP(timezone=True),
-            nullable=False,
-            server_default=text("CURRENT_TIMESTAMP"),
-        )
-    )
+    colected_date: date = date.today()
 
 
 def _run_issue_model(engine):
