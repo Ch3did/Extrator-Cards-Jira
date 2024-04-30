@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from typing import Optional
 
-from sqlmodel import TIMESTAMP, Column, Field, SQLModel, text
+from sqlmodel import Field, SQLModel
 
 
 class Issue(SQLModel, table=True):

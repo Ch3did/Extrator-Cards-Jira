@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Optional
 
-from sqlmodel import TIMESTAMP, Column, Field, SQLModel, text
+from sqlmodel import Field, SQLModel
 
 
 class Board(SQLModel, table=True):
