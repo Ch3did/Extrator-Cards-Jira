@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+from typing import List
+
 from loguru import logger
 from sqlmodel import Session, select
 
@@ -14,6 +17,8 @@ class DatabaseController:
     def __init__(self):
         self.engine = engine
         self.session = Session(engine)
+        self.yesturday = (datetime.now() - timedelta(days=1)).date()
+        self.today = datetime.now().date()
 
     def _add_to_database(self, data: object) -> None:
         "Save and commit objects on the database"
@@ -54,7 +59,7 @@ class DatabaseController:
         """
         logger.info(f"Saving issue: {issue_object.key}...")
         self._add_to_database(issue_object)
-        
+
         # OUTDATED Filter:
         # campos usados para comparação:
         # - Issue.issue_id
@@ -62,7 +67,7 @@ class DatabaseController:
         # - Issue.self_url
         # - Issue.key
         # - Issue.creators_name
-        
+
         # data = select(Issue).where(
         #     Issue.issue_id == issue_object.issue_id,
         #     Issue.board_id == issue_object.board_id,
@@ -85,12 +90,22 @@ class DatabaseController:
         - Sprint.sprint_id
         - Sprint.self_url
         - Sprint.sprint_name
+        - Sprint.status
+        - Sprint.start_date
+        - Sprint.resolution_date
+        - Sprint.created_date
+        - Sprint.end_date
 
         """
         data = select(Sprint).where(
             Sprint.sprint_id == sprint_object.sprint_id,
             Sprint.self_url == sprint_object.self_url,
             Sprint.sprint_name == sprint_object.sprint_name,
+            Sprint.status == sprint_object.status,
+            Sprint.start_date == sprint_object.start_date,
+            Sprint.resolution_date == sprint_object.resolution_date,
+            Sprint.created_date == sprint_object.created_date,
+            Sprint.end_date == sprint_object.end_date,
         )
         result = self.session.exec(data)
         if not bool(result.first()):
@@ -125,3 +140,32 @@ class DatabaseController:
         if not bool(result.first()):
             logger.info(f"Saving Changelog: {changelog_object.issue_id}...")
             self._add_to_database(changelog_object)
+
+    def get_issue_last_register(self, issue_id: str) -> Issue:
+        """Use issue_id to get the last card inside the database
+        Args:
+            issue_id (str): reference for issue
+
+        Returns:
+            Issue
+        """        
+        card_filter = select(Issue).filter(
+            Issue.colected_date == self.today, Issue.issue_id == issue_id
+        )
+        return self.session.exec(card_filter).first()
+
+    def get_deleted_cards_register(self) -> List[str]:
+        """Cross-reference the data extracted yesterday with today's to search for deleted cards.
+
+        Returns:
+            List[str]: list of issue_id from deleted cards
+        """        
+        cards_ontem = select(Issue.issue_id).where(
+            Issue.colected_date == self.yesturday
+        )
+        chaves_ontem = self.session.exec(cards_ontem).all()
+
+        cards_hoje = select(Issue.issue_id).filter(Issue.colected_date == self.today)
+        chaves_hoje = self.session.exec(cards_hoje).all()
+
+        return [chave for chave in chaves_ontem if chave not in chaves_hoje]
