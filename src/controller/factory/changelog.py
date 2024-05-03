@@ -9,8 +9,8 @@ class ChangelogController(DatabaseController):
 
     def changelog_factory(self, changelog_dict: dict, issue_id: int) -> Changelog:
         for change in changelog_dict["values"]:
-            
-            for item in change['items']:
+
+            for item in change["items"]:
 
                 changelog = Changelog(
                     issue_id=issue_id,
