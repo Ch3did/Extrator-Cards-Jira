@@ -18,7 +18,7 @@ class Issue(SQLModel, table=True):
     epic_key: Optional[str]
     epic_name: Optional[str]
     epic_summary: Optional[str]
-    sprint: Optional[str]
+    current_sprints: Optional[str]
     work_ratio: Optional[int]
     reporter_name: Optional[str]
     reportar_mail: Optional[str]
@@ -29,7 +29,7 @@ class Issue(SQLModel, table=True):
     timespent: Optional[datetime]
     resolution_date: Optional[datetime]
     creation_date: Optional[datetime]
-    closed_sprint: Optional[str]
+    belonged_sprint: Optional[str]
     colected_date: date = date.today()
 
 
