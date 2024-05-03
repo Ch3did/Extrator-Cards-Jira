@@ -9,17 +9,19 @@ class ChangelogController(DatabaseController):
 
     def changelog_factory(self, changelog_dict: dict, issue_id: int) -> Changelog:
         for change in changelog_dict["values"]:
+            
+            for item in change['items']:
 
-            changelog = Changelog(
-                issue_id=issue_id,
-                change_id=change["id"],
-                creator=change["author"]["displayName"],
-                change_date=datetime.strptime(
-                    change["created"][:-9], "%Y-%m-%dT%H:%M:%S"
-                ),
-                change_field=change["items"][0]["field"],
-                old_value=change["items"][0]["fromString"],
-                new_value=change["items"][0]["toString"],
-            )
+                changelog = Changelog(
+                    issue_id=issue_id,
+                    change_id=change["id"],
+                    creator=change["author"]["displayName"],
+                    change_date=datetime.strptime(
+                        change["created"][:-9], "%Y-%m-%dT%H:%M:%S"
+                    ),
+                    change_field=item["field"],
+                    old_value=item["fromString"],
+                    new_value=item["toString"],
+                )
 
-            self.save_changelog(changelog)
+                self.save_changelog(changelog)
