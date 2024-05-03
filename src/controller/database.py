@@ -148,9 +148,11 @@ class DatabaseController:
 
         Returns:
             Issue
-        """        
-        card_filter = select(Issue).filter(
-            Issue.colected_date == self.today, Issue.issue_id == issue_id
+        """
+        card_filter = (
+            select(Issue)
+            .filter(Issue.colected_date == self.today)
+            .filter(Issue.issue_id == issue_id)
         )
         return self.session.exec(card_filter).first()
 
@@ -159,7 +161,7 @@ class DatabaseController:
 
         Returns:
             List[str]: list of issue_id from deleted cards
-        """        
+        """
         cards_ontem = select(Issue.issue_id).where(
             Issue.colected_date == self.yesturday
         )
