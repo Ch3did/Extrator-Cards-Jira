@@ -157,7 +157,7 @@ class DatabaseController:
         return self.session.exec(card_filter).first()
 
     def get_deleted_cards_register(self) -> List[str]:
-        """Cross-reference the data extracted yesterday with today's to search for deleted cards.
+        """Cross-reffs from data extracted with today's to search for deleted cards.
 
         Returns:
             List[str]: list of issue_id from deleted cards
