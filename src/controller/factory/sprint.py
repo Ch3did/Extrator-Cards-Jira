@@ -31,14 +31,14 @@ class SprintController(DatabaseController):
                 dates["start_date"] = start_date.astimezone(fuso_horario_brasilia)
 
             # end date
-            if end_date_value := sprint.get("startDate"):
+            if end_date_value := sprint.get("endDate"):
                 end_date = datetime.strptime(
                     end_date_value[:-5], "%Y-%m-%dT%H:%M:%S"
                 ).replace(tzinfo=pytz.UTC)
                 dates["end_date"] = end_date.astimezone(fuso_horario_brasilia)
 
             # created date
-            if created_date_value := sprint.get("startDate"):
+            if created_date_value := sprint.get("createdDate"):
                 created_date = datetime.strptime(
                     created_date_value[:-5], "%Y-%m-%dT%H:%M:%S"
                 ).replace(tzinfo=pytz.UTC)
