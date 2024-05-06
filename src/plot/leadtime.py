@@ -85,6 +85,7 @@ class LeadTimePoTipo:
         alturas = list(dados.values())
 
         plt.barh(barras, alturas, color="lightblue")
+        plt.grid(True, axis='x', linestyle='--', alpha=0.7)
         plt.ylabel("Tipos")
         plt.xlabel("LeadTime (dias)")
         plt.title("LeadTime por Tipo")
