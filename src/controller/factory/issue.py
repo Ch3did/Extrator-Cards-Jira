@@ -55,6 +55,7 @@ class IssueController(DatabaseController):
 
             epic = fields_dict["epic"] if fields_dict.get("epic") else {}
             creator = fields_dict["creator"] if fields_dict.get("creator") else {}
+            assignee = fields_dict["assignee"] if fields_dict.get("assignee") else {}
             priority = fields_dict["priority"] if fields_dict.get("priority") else {}
             reporter = fields_dict["reporter"] if fields_dict.get("reporter") else {}
             progress = fields_dict["progress"] if fields_dict.get("progress") else {}
@@ -78,6 +79,8 @@ class IssueController(DatabaseController):
                 current_sprints=f"{sprints}",
                 belonged_sprint=f"{belonged_sprint}",
                 work_ratio=fields_dict.get("workratio"),
+                assignee_name=assignee.get("displayName"),
+                assignee_mail=assignee.get("emailAddress"),
                 reporter_name=reporter.get("displayName"),
                 reportar_mail=reporter.get("emailAddress"),
                 creators_name=creator.get("displayName"),
@@ -88,5 +91,4 @@ class IssueController(DatabaseController):
                 resolution_date=resolution_date_value,
                 creation_date=creation_date_value,
             )
-
             self.save_issue(issue)

@@ -20,6 +20,8 @@ class Issue(SQLModel, table=True):
     epic_summary: Optional[str]
     current_sprints: Optional[str]
     work_ratio: Optional[int]
+    assignee_name: Optional[str]
+    assignee_mail: Optional[str]
     reporter_name: Optional[str]
     reportar_mail: Optional[str]
     creators_name: Optional[str]

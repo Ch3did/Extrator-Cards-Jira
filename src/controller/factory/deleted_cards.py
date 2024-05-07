@@ -23,12 +23,14 @@ class DeletedCards(DatabaseController):
                 issue_type=last_issue.issue_type,
                 issue_type_id=last_issue.issue_type_id,
                 summary=last_issue.summary,
+                priority_name=last_issue.priority_name,
                 epic_key=last_issue.epic_key,
                 epic_name=last_issue.epic_name,
                 epic_summary=last_issue.epic_summary,
-                priority_name=last_issue.priority_name,
-                sprint=last_issue.sprint,
+                current_sprints=last_issue.current_sprints,
                 work_ratio=last_issue.work_ratio,
+                assignee_name=last_issue.assignee_name,
+                assignee_mail=last_issue.assignee_mail,
                 reporter_name=last_issue.reporter_name,
                 reportar_mail=last_issue.reportar_mail,
                 creators_name=last_issue.creators_name,
@@ -36,8 +38,9 @@ class DeletedCards(DatabaseController):
                 progress=last_issue.progress,
                 status_category_change_date=self.today,
                 timespent=last_issue.timespent,
+                resolution_date=last_issue.resolution_date,
                 creation_date=last_issue.creation_date,
-                closed_sprint=last_issue.closed_sprint,
+                belonged_sprint=last_issue.belonged_sprint,
             )
 
             deleted_changelog = Changelog(
