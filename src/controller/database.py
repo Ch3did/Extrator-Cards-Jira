@@ -151,7 +151,7 @@ class DatabaseController:
         """
         card_filter = (
             select(Issue)
-            .filter(Issue.colected_date == self.today)
+            .filter(Issue.colected_date == (self.today - timedelta(1)))
             .filter(Issue.issue_id == issue_id)
         )
         return self.session.exec(card_filter).first()
