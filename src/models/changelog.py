@@ -9,7 +9,8 @@ class Changelog(SQLModel, table=True):
     issue_id: Optional[int]
     change_id: Optional[int]
     creator: str
-    change_date: datetime
+    change_date: date
+    change_timestamp: datetime
     change_field: str
     old_value: Optional[str]
     new_value: Optional[str]
