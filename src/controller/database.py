@@ -171,3 +171,71 @@ class DatabaseController:
         chaves_hoje = self.session.exec(cards_hoje).all()
 
         return [chave for chave in chaves_ontem if chave not in chaves_hoje]
+
+    def get_changedate_from_issue_id_done(self, issue_id: str) -> str:
+        """Retorna a data da última mudança de status para 'Done' de uma issue.
+
+        Args:
+            issue: id referência do objeto Issue.
+
+        Returns:
+            str: Data da última mudança de status para 'Done'.
+        """
+        query = (
+            select(Changelog.change_timestamp)
+            .filter(Changelog.issue_id == issue_id)
+            .filter(Changelog.change_field == "status")
+            .filter(Changelog.new_value == "Done")
+            .order_by(Changelog.change_timestamp.desc())
+        )
+        result = self.session.exec(query)
+        return result.first()
+
+    def get_done_issues_list(self) -> List[Issue]:
+        """Retorna uma lista de issues que estão marcadas como 'Done'.
+
+        Returns:
+            list: Lista de objetos Issue.
+        """
+        card_filter = (
+            select(Issue)
+            .filter(Issue.status == "Done")
+            .filter(Issue.issue_type != "Sub-task")
+            .filter(Issue.colected_date == self.today)
+        )
+
+        cursor = self.session.exec(card_filter)
+        return cursor.all()
+
+    def get_start_date_from_older_sprint_on_list(self, sprints: List[str]):
+        """Retorna a data de início de referência da sprint mais antiga.
+
+        Args:
+            issue: Instância do objeto Issue.
+
+        Returns:
+            datetime: Data de início de referência.
+        """
+        query = (
+            select(Sprint.start_date)
+            .where(Sprint.sprint_id.in_(sprints))
+            .order_by(Sprint.start_date)
+        )
+
+        result = self.session.exec(query)
+        return result.first()
+
+    def get_all_issue_types(self) -> List[str]:
+        issue_types = select(Issue.issue_type).distinct()
+        cursor = self.session.exec(issue_types)
+        return cursor.all()
+
+    def get_done_issues_list_by_type(self, issue_type: str) -> str:
+        card_filter = (
+            select(Issue)
+            .filter(Issue.status == "Done")
+            .filter(Issue.issue_type == issue_type)
+            .filter(Issue.colected_date == self.today)
+        )
+        cursor = self.session.exec(card_filter)
+        return cursor.all()
