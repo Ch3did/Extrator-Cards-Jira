@@ -32,9 +32,6 @@ class LeadTimePoTipo:
 
     def make_plot(self):
         """Gera e exibe um gráfico de barras horizontal.
-
-        Args:
-            dados: Dicionário contendo os dados a serem plotados.
         """
         barras = list(self.medias.keys())
         alturas = list(self.medias.values())
@@ -49,7 +46,8 @@ class LeadTimePoTipo:
         pass
 
     def process(self):
-        """Processa as issues 'Done' e calcula o LeadTime por tipo."""
+        """Calcula o leadTime."""
+        logger.info("Processing LeadTime...")
         issues = self.db.get_done_issues_list()
         for count, issue in enumerate(issues):
 
@@ -67,5 +65,3 @@ class LeadTimePoTipo:
 
         for item in self._y:
             self.medias[item] = sum(self._y[item]) / len(self._y[item])
-
-        self.make_plot()

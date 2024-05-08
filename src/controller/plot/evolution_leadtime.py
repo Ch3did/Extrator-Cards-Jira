@@ -32,6 +32,8 @@ class EvolutionLeadtime:
         return issue.creation_date
 
     def make_plot(self, widget=3):
+        """Gera e exibe um gráfico de barras horizontal.
+        """
         dates = [datetime.strptime(item, "%Y-%m-%d") for item in self.medias.keys()]
         index = self.db.get_all_issue_types()
 
@@ -59,6 +61,8 @@ class EvolutionLeadtime:
         plt.show()
 
     def process(self):
+        """Calcula o Evolution leadTime."""
+        logger.info("Processing Evolution LeadTime...")
         for day in self.days:
             day_format = day.isoformat()
 
@@ -85,4 +89,3 @@ class EvolutionLeadtime:
 
                 if value:
                     self.medias[day_format].update({tipo: (value / lenght)})
-        self.make_plot()
