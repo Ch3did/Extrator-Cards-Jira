@@ -16,7 +16,7 @@ install:
 pre-commit:
 	@black .
 	@isort .
-	@flake8 --max-line-length 87
+	@flake8 --max-line-length 89
 
 
 .PHONY: restart_db
