@@ -9,3 +9,4 @@ SQLAlchemy==2.0.25
 sqlmodel==0.0.14
 matplotlib==3.8.4
 pytz==2024.1
+numpy==1.26.4
