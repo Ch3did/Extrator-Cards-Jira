@@ -1,20 +1,12 @@
 from datetime import datetime
 
 import matplotlib.pyplot as plt
+import numpy as np
+from loguru import logger
 
-from src.controller.database import DatabaseController
 
-
-class LeadTimePoTipo:
+class Leadtime:
     """classe responsável pelo controle da base de dados e geração de documentos"""
-
-    def __init__(self):
-        self.db = DatabaseController()
-
-        self.today = datetime.now().date()
-
-        self._y = {}
-        self.medias = {}
 
     def get_start_date_reference(self, issue):
         """Retorna a data de início de referência para uma issue.
@@ -30,38 +22,63 @@ class LeadTimePoTipo:
 
         return issue.creation_date
 
-    def make_plot(self):
-        """Gera e exibe um gráfico de barras horizontal.
-        """
-        barras = list(self.medias.keys())
-        alturas = list(self.medias.values())
+    def make_plot(self, widget=3):
+        """Gera e exibe um gráfico de barras horizontal."""
+        dates = [datetime.strptime(item, "%Y-%m-%d") for item in self.evolution.keys()]
+        index = self.db.get_all_issue_types()
 
-        plt.barh(barras, alturas, color="lightblue")
-        plt.grid(True, axis="x", linestyle="--", alpha=0.7)
-        plt.ylabel("Tipos")
-        plt.xlabel("LeadTime (dias)")
-        plt.title("LeadTime por Tipo")
-        plt.xticks(range(0, int(max(alturas) + 2) + 1, 1))
-        plt.show()
-        pass
+        plt.figure(figsize=(10, 6))
 
-    def process(self):
-        """Calcula o leadTime."""
-        logger.info("Processing LeadTime...")
-        issues = self.db.get_done_issues_list()
-        for count, issue in enumerate(issues):
-
-            if issue.issue_type not in self._y:
-                self._y[issue.issue_type] = []
-
-            end_date = self.db.get_changedate_from_issue_id_done(issue.issue_id)
-            start_date = self.get_start_date_reference(issue)
-
-            count_of_days = end_date - start_date
-
-            self._y[issue.issue_type].append(
-                count_of_days.days + (count_of_days.seconds / 86400)
+        for linha, tipo_linha in enumerate(index):
+            pontos = [
+                self.evolution[item].get(tipo_linha, None)
+                for item in self.evolution.keys()
+            ]
+            plt.plot(
+                dates,
+                np.array(pontos),
+                label=tipo_linha,
+                linewidth=widget,
             )
 
-        for item in self._y:
-            self.medias[item] = sum(self._y[item]) / len(self._y[item])
+        plt.title("Evolution Leadtime")
+        plt.xlabel("Data")
+        plt.ylabel("Tipo de leadtime")
+        plt.xticks(rotation=45)
+        plt.grid(True, linestyle="--", alpha=0.7)
+        plt.legend()
+        plt.tight_layout()
+        plt.legend(loc="lower left")
+        plt.show()
+
+    def process(self):
+        """Detem a logica para montar gráficos relacionados ao leadTime."""
+        for day in self.days:
+            day_format = day.isoformat()
+            logger.info(f"Searching for info on {day_format}")
+
+            self.types = self.db.get_all_issue_types()
+            self.evolution[day_format] = {tipo: 0 for tipo in self.types}
+
+            for tipo in self.types:
+                issues = self.db.get_done_issues_list_by_type(tipo)
+                lenght = 0
+                value = 0
+
+                for issue in issues:
+                    change_timestamp = self.db.get_changedate_from_issue_id_done(
+                        issue.issue_id
+                    )
+                    if change_timestamp.date() <= day:
+                        start_date = self.get_start_date_reference(issue)
+                        days_comparisson = change_timestamp - start_date
+                        count_days = days_comparisson.days + (
+                            days_comparisson.seconds / 86400
+                        )
+                        lenght += 1
+                        value += count_days
+
+                if value:
+                    self.evolution[day_format].update({tipo: (value / lenght)})
+            if self.today == day:
+                self.leadtime = self.evolution[day_format].copy()
