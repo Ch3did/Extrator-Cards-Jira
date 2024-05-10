@@ -6,7 +6,7 @@ from src.controller.jira_api import JiraAPI
 from src.models.board import Board
 
 
-class JiraView(JiraAPI):
+class ExtractView(JiraAPI):
     def get_boards(self) -> List[Board]:
         """Handle the logic for get boards and pagination"""
         logger.info("Getting boards...")
@@ -54,7 +54,7 @@ class JiraView(JiraAPI):
             )
             page += 1
 
-    def get_changelog(self, issue_dict: dict):
+    def get_changelog(self, issue_dict: dict) -> None:
         is_last_page = False
         page = 0
         while not is_last_page:
@@ -69,7 +69,7 @@ class JiraView(JiraAPI):
                 )
             page += 1
 
-    def get_deleted_cards(self):
+    def get_deleted_cards(self) -> None:
         self.deleted_cards.deleted_cards_factory()
 
     def process(self) -> None:
