@@ -80,3 +80,5 @@ class ExtractView(JiraAPI):
             self.get_issues(board)
             self.get_deleted_cards()
             self._status = "Success"
+
+        logger.info("Finish data extract!")
