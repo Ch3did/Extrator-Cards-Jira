@@ -5,11 +5,13 @@ O Animated Bassoon é uma aplicação Python desenvolvida para extrair dados do 
 ## Funcionalidades Principais:
 - Extrai dados de boards (projetos), sprints e issues (cards) do Jira.
 - Armazena os dados em um banco de dados para análise posterior.
+- Calcula leadtime e evolution leadtime a partir dos dados extraídos do Jira.
+- Gera um gráfico representando o leadtime e evolution leadtime.
+- Salva a imagem do gráfico no serviço de armazenamento S3.
 
 ## Pré-requisitos:
 - Python instalado.
 - Pip instalado.
-
 
 ## Configuração:
 
@@ -19,13 +21,17 @@ Durante a execução do código, um arquivo chamado .env será criado. Caso não
 
 Para instalar o Animated Bassoon, execute o seguinte comando:
 
-> make install
+```
+make install
+```
 
 ## Uso:
 
 Para executar o Animated Bassoon, utilize o seguinte comando:
 
-> make run
+```
+make run
+```
 
 ### Observações:
 
