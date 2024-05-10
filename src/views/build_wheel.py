@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from loguru import logger
 
+from src.const import STATUS as ST
 from src.controller.database import DatabaseController
 from src.controller.plot.leadtime import Leadtime
 
@@ -31,6 +32,7 @@ class BuildView(Leadtime):
         self.days = [
             (datetime.now() - timedelta(days=item)).date() for item in range(30)
         ]
+        self._status = ST.ONGOING
 
     def send_to_s3(self, plt, file_name, acl="public-read") -> BytesIO:
         imagem_buffer = BytesIO()
@@ -50,6 +52,7 @@ class BuildView(Leadtime):
         )
         logger.info(f"File with key: {file_name} saved succesfully!")
         logger.info(f"\nURL for {file_name}: {url}")
+        self._status = ST.SUCCESS
 
     def plot_leadtime_graff(self) -> None:
         logger.info("Creating leadtime graffic")

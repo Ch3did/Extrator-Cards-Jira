@@ -2,6 +2,7 @@ from typing import List
 
 from loguru import logger
 
+from src.const import STATUS as ST
 from src.controller.jira_api import JiraAPI
 from src.models.board import Board
 
@@ -79,6 +80,6 @@ class ExtractView(JiraAPI):
             self.get_sprints(board)
             self.get_issues(board)
             self.get_deleted_cards()
-            self._status = "Success"
+            self._status = ST.SUCCESS
 
         logger.info("Finish data extract!")

@@ -2,6 +2,7 @@ import base64
 
 import requests
 
+from src.const import STATUS as ST
 from src.controller.factory.board import BoardController
 from src.controller.factory.changelog import ChangelogController
 from src.controller.factory.deleted_cards import DeletedCards
@@ -21,7 +22,7 @@ class JiraAPI:
         self.sprint = SprintController()
         self.changelog = ChangelogController()
         self.deleted_cards = DeletedCards()
-        self._status = "In Progress"
+        self._status = ST.ONGOING
 
     def _get_token(self) -> str:
         """Encode the email and apiToken to base 64 and return as token
