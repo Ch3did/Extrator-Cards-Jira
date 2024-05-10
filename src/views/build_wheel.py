@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 from io import BytesIO
-from time import sleep
 
 import boto3
 import matplotlib.pyplot as plt
@@ -33,15 +32,24 @@ class BuildView(Leadtime):
             (datetime.now() - timedelta(days=item)).date() for item in range(30)
         ]
 
-    def send_to_s3(self, plt, file_name) -> BytesIO:
+    def send_to_s3(self, plt, file_name, acl="public-read") -> BytesIO:
         imagem_buffer = BytesIO()
         plt.savefig(imagem_buffer, format="png")
         imagem_buffer.seek(0)
         imagem_buffer
-        
         logger.info(f"Sending {file_name} to S3!")
-        self.s3.upload_fileobj(imagem_buffer, self.bucket, file_name)
+
+        self.s3.upload_fileobj(
+            imagem_buffer, self.bucket, file_name, ExtraArgs={"ACL": acl}
+        )
+
+        url = self.s3.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": self.bucket, "Key": file_name},
+            ExpiresIn=3600,
+        )
         logger.info(f"File with key: {file_name} saved succesfully!")
+        logger.info(f"\nURL for {file_name}: {url}")
 
     def plot_leadtime_graff(self) -> None:
         logger.info("Creating leadtime graffic")
