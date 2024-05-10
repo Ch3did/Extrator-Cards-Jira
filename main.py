@@ -13,7 +13,7 @@ if __name__ == "__main__":
         access_key_id=ACCESS_KEY_ID, secret_access_key=SECRET_ACCESS_KEY, bucket=BUCKET
     )
     try:
-        # exctract.process()
+        exctract.process()
         build.process()
         build.plot_leadtime_graff()
         build.plot_evolution_graff()
