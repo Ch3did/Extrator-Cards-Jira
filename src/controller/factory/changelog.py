@@ -16,7 +16,7 @@ class ChangelogController(DatabaseController):
                     issue_id=issue_id,
                     change_id=change["id"],
                     creator=change["author"]["displayName"],
-                    change_date=datetime.strptime(change["created"][:-17], "%Y-%m-%dT"),
+                    change_date=change["created"][:-18],
                     change_timestamp=datetime.strptime(
                         change["created"][:-9], "%Y-%m-%dT%H:%M:%S"
                     ),

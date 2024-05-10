@@ -57,8 +57,7 @@ class DatabaseController:
 
 
         """
-        logger.info(f"Saving issue: {issue_object.key}...")
-        
+
         data = select(Issue).where(
             Issue.issue_id == issue_object.issue_id,
             Issue.self_url == issue_object.self_url,
@@ -67,7 +66,10 @@ class DatabaseController:
         )
         result = self.session.exec(data)
         if not bool(result.first()):
+            logger.info(f"Saving issue: {issue_object.key}...")
             self._add_to_database(issue_object)
+        else:
+            logger.info(f"Skipping issue: {issue_object.key}...")
 
     def save_sprint(self, sprint_object: Sprint) -> None:
         """Usa o Objeto Sprint recem criado para validar duplicidade
@@ -122,12 +124,14 @@ class DatabaseController:
             Changelog.issue_id == changelog_object.issue_id,
             Changelog.creator == changelog_object.creator,
             Changelog.change_date == changelog_object.change_date,
+            Changelog.change_timestamp == changelog_object.change_timestamp,
             Changelog.change_field == changelog_object.change_field,
             Changelog.old_value == changelog_object.old_value,
             Changelog.new_value == changelog_object.new_value,
         )
         result = self.session.exec(data)
-        if not bool(result.first()):
+        x = result.first()
+        if not bool(x):
             logger.info(f"Saving Changelog: {changelog_object.issue_id}...")
             self._add_to_database(changelog_object)
 
