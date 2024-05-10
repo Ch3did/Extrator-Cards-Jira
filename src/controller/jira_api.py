@@ -70,9 +70,3 @@ class JiraAPI:
         return self._make_request(
             f"{self.domain}api/3/issue/{issue_id}/changelog", page
         )
-
-    # def _get_epics_basic_info(self, board_id, page: int) -> dict:
-    #     url = f"{self.domain}/rest/agile/1.0/board/{board_id}/epic"
-
-    # def _get_epic_info(self, epic_id, page: int) -> dict:
-    #     url = f"{self.domain}/rest//agile/1.0/epic/{epic_id}"
