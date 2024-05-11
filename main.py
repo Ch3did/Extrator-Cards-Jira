@@ -9,7 +9,7 @@ from src.views.build_wheel import BuildView
 from src.views.extract import ExtractView
 
 
-def main():
+def run():
     try:
         exctract = ExtractView(domain=DOMAIN, api_token=API_TOKEN, email=EMAIL)
         exctract.process()
@@ -35,4 +35,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run()
