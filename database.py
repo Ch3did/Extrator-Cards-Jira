@@ -8,8 +8,8 @@ from src.models.changelog import _run_changelog_model
 from src.models.issue import _run_issue_model
 from src.models.sprint import _run_sprint_model
 
-if os.path.exists("/tmp/test_app.db"):
-    os.rename("/tmp/test_app.db", f"./tmp/{COMPANY_NAME}.db")
+if os.path.exists("./tmp/test_app.db"):
+    os.rename("./tmp/test_app.db", f"./tmp/{COMPANY_NAME}.db")
 
 engine = create_engine(DATABASE_URL, echo=bool(DEBUG))
 
