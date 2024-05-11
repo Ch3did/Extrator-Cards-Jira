@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from loguru import logger
 
 from src.controller.database import DatabaseController
@@ -47,6 +49,7 @@ class DeletedCards(DatabaseController):
                 issue_id=issue_id,
                 creator="animated_bassoon",
                 change_date=self.today,
+                change_timestamp=datetime.combine(self.today, datetime.min.time()),
                 change_field="status",
                 old_value=last_issue.status,
                 new_value="deleted",
