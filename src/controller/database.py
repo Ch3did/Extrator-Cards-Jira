@@ -9,6 +9,7 @@ from src.models.board import Board
 from src.models.changelog import Changelog
 from src.models.issue import Issue
 from src.models.sprint import Sprint
+from src.models.view.leadtime import AverageLeadtime
 
 
 class DatabaseController:
@@ -128,6 +129,19 @@ class DatabaseController:
         if not bool(result.first()):
             logger.info(f"Saving Changelog: {changelog_object.issue_id}...")
             self._add_to_database(changelog_object)
+
+    def save_average_leadtime(self, average_object: AverageLeadtime) -> None:
+        data = select(AverageLeadtime).where(
+            AverageLeadtime.analyzed_day == average_object.analyzed_day,
+            AverageLeadtime.issue_id == average_object.issue_id,
+        )
+
+        result = self.session.exec(data)
+        if not bool(result.first()):
+            logger.info(
+                f"Saving Average LeadTime from: {average_object.analyzed_day}..."
+            )
+            self._add_to_database(average_object)
 
     def get_issue_last_register(self, issue_id: str) -> Issue:
         """Use issue_id to get the last card inside the database

@@ -7,6 +7,7 @@ from src.models.board import _run_board_model
 from src.models.changelog import _run_changelog_model
 from src.models.issue import _run_issue_model
 from src.models.sprint import _run_sprint_model
+from src.models.view.leadtime import _run_average_model
 
 if os.path.exists("./tmp/test_app.db"):
     os.rename("./tmp/test_app.db", f"./tmp/{COMPANY_NAME}.db")
@@ -18,3 +19,4 @@ if __name__ == "__main__":
     _run_issue_model(engine)
     _run_sprint_model(engine)
     _run_changelog_model(engine)
+    _run_average_model(engine)
