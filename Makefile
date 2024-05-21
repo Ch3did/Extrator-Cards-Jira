@@ -22,7 +22,6 @@ pre-commit:
 .PHONY: restart_db
 # run send database to windows operation system
 restart_db:
-	@rm -r ./tmp/test_app.db
 	@touch ./tmp/test_app.db
 	@python3 database.py
 
