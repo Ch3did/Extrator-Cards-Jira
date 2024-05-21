@@ -3,11 +3,11 @@ import base64
 import requests
 
 from src.const import STATUS as ST
-from src.controller.factory.board import BoardController
-from src.controller.factory.changelog import ChangelogController
-from src.controller.factory.deleted_cards import DeletedCards
-from src.controller.factory.issue import IssueController
-from src.controller.factory.sprint import SprintController
+from src.controller.factory.objects.board import BoardController
+from src.controller.factory.objects.changelog import ChangelogController
+from src.controller.factory.objects.deleted_cards import DeletedCards
+from src.controller.factory.objects.issue import IssueController
+from src.controller.factory.objects.sprint import SprintController
 
 
 class JiraAPI:
