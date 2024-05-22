@@ -1,11 +1,10 @@
 from datetime import datetime, timedelta
 
-import matplotlib.pyplot as plt
-import numpy as np
 from loguru import logger
 
 from src.const import STATUS as ST
 from src.controller.factory.analysis.leadtime import LeadTimeController
+from src.controller.factory.analysis.velocity import VelocityController
 from src.controller.factory.objects.changelog import ChangelogController
 from src.controller.factory.objects.issue import IssueController
 from src.controller.factory.objects.sprint import SprintController
@@ -13,10 +12,14 @@ from src.controller.factory.objects.sprint import SprintController
 
 class BuildView:
     def __init__(self):
+        # Models
         self.issue = IssueController()
         self.sprint = SprintController()
         self.changelog = ChangelogController()
+        # Analytics
         self.leadtime = LeadTimeController()
+        self.velocity = VelocityController()
+        # Variables
         self.today = datetime.now().date()
         self.days = [
             (datetime.now() - timedelta(days=item)).date() for item in range(30)
@@ -51,6 +54,26 @@ class BuildView:
             issue_dict.update({issue.issue_id: issue})
         return issue_dict
 
+    def get_sprints(self) -> dict:
+        sprint_dict = {}
+        for sprint in self.sprint.get_all_sprints():
+            sprint_dict.update(
+                {
+                    sprint.id: {
+                        "sprint_name": sprint.sprint_name,
+                        "start_date": sprint.start_date,
+                        "end_date": sprint.end_date,
+                    }
+                }
+            )
+        return sprint_dict
+
+    def get_changelog_from_sprints_cards(self, sprint_info):
+        changelogs = self.changelog.get_all_changelog_from_sprint_before_date(
+            sprint_info["sprint_name"], sprint_info["start_date"]
+        )
+        return changelogs
+
     def process_leadtime(self):
         """Detem a logica para montar gráficos relacionados ao leadTime."""
 
@@ -79,3 +102,19 @@ class BuildView:
                     }
                 )
         self._status = ST.SUCCESS
+
+    def process_velocity(self):
+        """Detem a logica para montar gráficos relacionados ao velocity."""
+        sprints = self.get_sprints()
+        for sprint_id, sprint_info in sprints.items():
+            self.get_changelog_from_sprints_cards(sprint_info)
+
+        self.velocity.velocity_factory(
+            {
+                "sprint_name": "",
+                "issue_type": "",
+                "count_of_cards": "",
+                "sprint_started_date": "",
+                "sprint_end_date": "",
+            }
+        )
