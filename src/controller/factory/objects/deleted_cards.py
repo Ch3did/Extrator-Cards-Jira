@@ -12,7 +12,7 @@ class DeletedCards(DatabaseController):
 
     def deleted_cards_factory(self) -> None:
         for issue_id in self.get_deleted_cards_register():
-            last_issue = self.get_issue_last_register(issue_id)
+            last_issue = self.get_issue_yesterday_register(issue_id)
 
             logger.info(f"Creating deleted register for {last_issue.key}")
 
