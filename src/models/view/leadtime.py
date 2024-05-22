@@ -4,7 +4,7 @@ from typing import Optional
 from sqlmodel import Field, SQLModel
 
 
-class AverageLeadtime(SQLModel, table=True):
+class ViewLeadtime(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     issue_id: str
     average_days: float
@@ -16,5 +16,5 @@ class AverageLeadtime(SQLModel, table=True):
     colected_date: date = date.today()
 
 
-def _run_average_model(engine):
+def _run_leadtime_model(engine):
     SQLModel.metadata.create_all(engine)
