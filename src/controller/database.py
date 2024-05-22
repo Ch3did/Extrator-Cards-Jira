@@ -9,7 +9,8 @@ from src.models.board import Board
 from src.models.changelog import Changelog
 from src.models.issue import Issue
 from src.models.sprint import Sprint
-from src.models.view.leadtime import AverageLeadtime
+from src.models.view.leadtime import ViewLeadtime
+from src.models.view.velocity import ViewVelocity
 
 
 class DatabaseController:
@@ -130,10 +131,10 @@ class DatabaseController:
             logger.info(f"Saving Changelog: {changelog_object.issue_id}...")
             self._add_to_database(changelog_object)
 
-    def save_average_leadtime(self, average_object: AverageLeadtime) -> None:
-        data = select(AverageLeadtime).where(
-            AverageLeadtime.analyzed_day == average_object.analyzed_day,
-            AverageLeadtime.issue_id == average_object.issue_id,
+    def save_average_leadtime(self, average_object: ViewLeadtime) -> None:
+        data = select(ViewLeadtime).where(
+            ViewLeadtime.analyzed_day == average_object.analyzed_day,
+            ViewLeadtime.issue_id == average_object.issue_id,
         )
 
         result = self.session.exec(data)
@@ -142,6 +143,32 @@ class DatabaseController:
                 f"Saving Average LeadTime from: {average_object.analyzed_day}..."
             )
             self._add_to_database(average_object)
+
+    def save_average_velocity(self, average_object: ViewVelocity) -> None:
+        data = select(ViewVelocity).where(
+            ViewVelocity.sprint_id == average_object.sprint_id,
+            ViewVelocity.issue_type == average_object.issue_type,
+        )
+
+        result = self.session.exec(data)
+        if not bool(result.first()):
+            logger.info(f"Saving Velocity from: {average_object.sprint_id}...")
+            self._add_to_database(average_object)
+
+    def get_issue_yesterday_register(self, issue_id: str) -> Issue:
+        """Use issue_id to get the last card inside the database
+        Args:
+            issue_id (str): reference for issue
+
+        Returns:
+            Issue
+        """
+        card_filter = (
+            select(Issue)
+            .filter(Issue.colected_date == (self.today - timedelta(1)))
+            .filter(Issue.issue_id == issue_id)
+        )
+        return self.session.exec(card_filter).first()
 
     def get_issue_last_register(self, issue_id: str) -> Issue:
         """Use issue_id to get the last card inside the database
@@ -153,7 +180,7 @@ class DatabaseController:
         """
         card_filter = (
             select(Issue)
-            .filter(Issue.colected_date == (self.today - timedelta(1)))
+            .filter(Issue.colected_date == self.today)
             .filter(Issue.issue_id == issue_id)
         )
         return self.session.exec(card_filter).first()
@@ -232,12 +259,27 @@ class DatabaseController:
         cursor = self.session.exec(issue_types)
         return cursor.all()
 
-    def get_done_issues_list_by_type(self, issue_type: str) -> str:
+    def get_all_sprints(self) -> dict:
+        cursor = self.session.exec(select(Sprint))
+        return cursor.all()
+
+    def get_all_changelog_from_sprint_before_date(
+        self, sprint_name: str, date: datetime
+    ) -> dict:
         card_filter = (
-            select(Issue)
-            .filter(Issue.status == "Done")
-            .filter(Issue.issue_type == issue_type)
-            .filter(Issue.colected_date == self.today)
+            select(Changelog)
+            .filter(Changelog.change_date <= date)
+            .filter(Changelog.change_field == "Sprint")
+            .filter(Changelog.new_value.contains(sprint_name))
+        )
+        cursor = self.session.exec(card_filter)
+        return cursor.all()
+
+    def get_sprint_changes_for_card(self, issue_id):
+        card_filter = (
+            select(Changelog)
+            .filter(Changelog.issue_id == issue_id)
+            .filter(Changelog.change_field == "Sprint")
         )
         cursor = self.session.exec(card_filter)
         return cursor.all()

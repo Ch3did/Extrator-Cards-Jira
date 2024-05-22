@@ -68,11 +68,26 @@ class BuildView:
             )
         return sprint_dict
 
-    def get_changelog_from_sprints_cards(self, sprint_info):
+    def get_issue_id_from_start_sprint(self, sprint_info):
+        sprint_cards = []
+        was_removed = False
         changelogs = self.changelog.get_all_changelog_from_sprint_before_date(
             sprint_info["sprint_name"], sprint_info["start_date"]
         )
-        return changelogs
+        for change in changelogs:
+            sprint_changes = self.changelog.get_sprint_changes_for_card(change.issue_id)
+            for data in sprint_changes:
+                if (
+                    data.change_date < sprint_info["start_date"].date()
+                    and data.old_value == sprint_info["sprint_name"]
+                ):
+                    was_removed = True
+
+            if not was_removed:
+                sprint_cards.append(change.issue_id)
+
+            was_removed = False
+        return sprint_cards
 
     def process_leadtime(self):
         """Detem a logica para montar gráficos relacionados ao leadTime."""
@@ -105,16 +120,29 @@ class BuildView:
 
     def process_velocity(self):
         """Detem a logica para montar gráficos relacionados ao velocity."""
+        velocity_types = {
+            issue_type: [] for issue_type in self.issue.get_all_issue_types()
+        }
         sprints = self.get_sprints()
         for sprint_id, sprint_info in sprints.items():
-            self.get_changelog_from_sprints_cards(sprint_info)
+            issues = self.get_issue_id_from_start_sprint(sprint_info)
 
-        self.velocity.velocity_factory(
-            {
-                "sprint_name": "",
-                "issue_type": "",
-                "count_of_cards": "",
-                "sprint_started_date": "",
-                "sprint_end_date": "",
-            }
-        )
+            for issue_id in issues:
+                issue = self.issue.get_issue_last_register(issue_id)
+
+                velocity_types[issue.issue_type].append(issue_id)
+
+            if issues:
+                for _type in velocity_types:
+
+                    if velocity_types[_type]:
+                        self.velocity.velocity_factory(
+                            {
+                                "sprint_name": sprint_info["sprint_name"],
+                                "sprint_id": sprint_id,
+                                "issue_type": issue.issue_type,
+                                "count_of_cards": len(velocity_types[issue.issue_type]),
+                                "sprint_started_date": sprint_info["start_date"],
+                                "sprint_end_date": sprint_info["end_date"],
+                            }
+                        )
