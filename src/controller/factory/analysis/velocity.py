@@ -8,8 +8,8 @@ class VelocityController(DatabaseController):
         velocity = ViewVelocity(
             sprint_name=velocity_dict["sprint_name"],
             sprint_id=velocity_dict["sprint_id"],
+            issue_key=velocity_dict["issue_key"],
             issue_type=velocity_dict["issue_type"],
-            count_of_cards=velocity_dict["count_of_cards"],
             sprint_started_date=velocity_dict["sprint_started_date"],
             sprint_end_date=velocity_dict["sprint_end_date"],
         )

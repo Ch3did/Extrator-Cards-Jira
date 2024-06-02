@@ -8,8 +8,8 @@ class ViewVelocity(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     sprint_name: str
     sprint_id: int
+    issue_key: str
     issue_type: str
-    count_of_cards: int
     sprint_started_date: date
     sprint_end_date: date
 
