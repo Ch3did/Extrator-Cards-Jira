@@ -139,20 +139,19 @@ class DatabaseController:
 
         result = self.session.exec(data)
         if not bool(result.first()):
-            logger.info(
-                f"Saving Average LeadTime from: {average_object.analyzed_day}..."
-            )
+            logger.info(f"Saving Average LeadTime from: {average_object.issue_id}...")
             self._add_to_database(average_object)
 
     def save_average_velocity(self, average_object: ViewVelocity) -> None:
         data = select(ViewVelocity).where(
             ViewVelocity.sprint_id == average_object.sprint_id,
+            ViewVelocity.issue_key == average_object.issue_key,
             ViewVelocity.issue_type == average_object.issue_type,
         )
 
         result = self.session.exec(data)
         if not bool(result.first()):
-            logger.info(f"Saving Velocity from: {average_object.sprint_id}...")
+            logger.info(f"Saving Velocity from: {average_object.issue_key}...")
             self._add_to_database(average_object)
 
     def get_issue_yesterday_register(self, issue_id: str) -> Issue:
@@ -263,23 +262,28 @@ class DatabaseController:
         cursor = self.session.exec(select(Sprint))
         return cursor.all()
 
-    def get_all_changelog_from_sprint_before_date(
-        self, sprint_name: str, date: datetime
-    ) -> dict:
-        card_filter = (
+    def get_changelogs_by_criteria(
+        self, target_date: datetime, target_sprint: str
+    ) -> List[Changelog]:
+        statement = (
             select(Changelog)
-            .filter(Changelog.change_date <= date)
             .filter(Changelog.change_field == "Sprint")
-            .filter(Changelog.new_value.contains(sprint_name))
+            .filter(Changelog.new_value.contains(target_sprint))
+            .filter(Changelog.change_date <= target_date)
+            .order_by(Changelog.change_date.desc())
         )
-        cursor = self.session.exec(card_filter)
-        return cursor.all()
+        results = self.session.exec(statement).all()
+        return results
 
-    def get_sprint_changes_for_card(self, issue_id):
-        card_filter = (
+    def get_changelogs_by_issue_id(
+        self, issue_id: int, target_date: datetime
+    ) -> List[Changelog]:
+        statement = (
             select(Changelog)
             .filter(Changelog.issue_id == issue_id)
             .filter(Changelog.change_field == "Sprint")
+            .filter(Changelog.change_date <= target_date)
+            .order_by(Changelog.change_date.desc())
         )
-        cursor = self.session.exec(card_filter)
-        return cursor.all()
+        results = self.session.exec(statement).first()
+        return results
