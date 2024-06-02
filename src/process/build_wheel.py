@@ -59,7 +59,7 @@ class BuildView:
         for sprint in self.sprint.get_all_sprints():
             sprint_dict.update(
                 {
-                    sprint.id: {
+                    sprint.sprint_id: {
                         "sprint_name": sprint.sprint_name,
                         "start_date": sprint.start_date,
                         "end_date": sprint.end_date,
@@ -69,25 +69,21 @@ class BuildView:
         return sprint_dict
 
     def get_issue_id_from_start_sprint(self, sprint_info):
-        sprint_cards = []
-        was_removed = False
-        changelogs = self.changelog.get_all_changelog_from_sprint_before_date(
-            sprint_info["sprint_name"], sprint_info["start_date"]
+        issue_dict = []
+        sprint_changelog = self.changelog.get_changelogs_by_criteria(
+            sprint_info["start_date"], sprint_info["sprint_name"]
         )
-        for change in changelogs:
-            sprint_changes = self.changelog.get_sprint_changes_for_card(change.issue_id)
-            for data in sprint_changes:
-                if (
-                    data.change_date < sprint_info["start_date"].date()
-                    and data.old_value == sprint_info["sprint_name"]
-                ):
-                    was_removed = True
+        for change in sprint_changelog:
+            last_log_from_issue = self.changelog.get_changelogs_by_issue_id(
+                change.issue_id, sprint_info["start_date"]
+            )
+            if (
+                last_log_from_issue.new_value
+                and sprint_info["sprint_name"] in last_log_from_issue.new_value
+            ):
+                issue_dict.append(last_log_from_issue)
 
-            if not was_removed:
-                sprint_cards.append(change.issue_id)
-
-            was_removed = False
-        return sprint_cards
+        return issue_dict
 
     def process_leadtime(self):
         """Detem a logica para montar gráficos relacionados ao leadTime."""
@@ -125,24 +121,18 @@ class BuildView:
         }
         sprints = self.get_sprints()
         for sprint_id, sprint_info in sprints.items():
-            issues = self.get_issue_id_from_start_sprint(sprint_info)
+            if sprint_info["sprint_name"] == "DEV Sprint 9":
+                pass
+            changes = self.get_issue_id_from_start_sprint(sprint_info)
+            for change in changes:
+                issue = self.issue.get_issue_last_register(change.issue_id)
+                velocity_dict = {
+                    "sprint_name": sprint_info["sprint_name"],
+                    "sprint_id": sprint_id,
+                    "issue_key": issue.key,
+                    "issue_type": issue.issue_type,
+                    "sprint_started_date": sprint_info["start_date"],
+                    "sprint_end_date": sprint_info["end_date"],
+                }
 
-            for issue_id in issues:
-                issue = self.issue.get_issue_last_register(issue_id)
-
-                velocity_types[issue.issue_type].append(issue_id)
-
-            if issues:
-                for _type in velocity_types:
-
-                    if velocity_types[_type]:
-                        self.velocity.velocity_factory(
-                            {
-                                "sprint_name": sprint_info["sprint_name"],
-                                "sprint_id": sprint_id,
-                                "issue_type": issue.issue_type,
-                                "count_of_cards": len(velocity_types[issue.issue_type]),
-                                "sprint_started_date": sprint_info["start_date"],
-                                "sprint_end_date": sprint_info["end_date"],
-                            }
-                        )
+                self.velocity.velocity_factory(velocity_dict)
