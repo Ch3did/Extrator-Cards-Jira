@@ -25,6 +25,7 @@ class IssueController(DatabaseController):
         else:
             if current_sprint_id := sprints_list.get("id"):
                 sprints.append(current_sprint_id)
+        return sprints
 
     @staticmethod
     def _solve_belonged_sprint(belonged_sprint_list, sprints=[]):
@@ -47,6 +48,7 @@ class IssueController(DatabaseController):
             )
 
             # Sprint Resolution
+            plus_sprint = fields_dict["customfield_10020"] if fields_dict.get("customfield_10020") else {}
             sprints_list = fields_dict["sprint"] if fields_dict.get("sprint") else {}
             sprints = self._solve_sprint(sprints_list)
             belonged_sprint = self._solve_belonged_sprint(
