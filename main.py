@@ -16,13 +16,11 @@ def run():
     try:
         logger.info("Staring Extraction...")
         extract.process()
+        logger.info("Extraction finished sucessfully!")
 
     except Exception as error:
         logger.error(f"Unexpected error: {error}")
         logger.error(traceback.format_exc())
-
-    finally:
-        logger.info("Extraction finished sucessfully!")
 
 
 if __name__ == "__main__":
