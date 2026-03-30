@@ -162,3 +162,9 @@ cython_debug/
 
 tmp/
 test.py
+
+old/
+
+tmp/
+
+.vscode
