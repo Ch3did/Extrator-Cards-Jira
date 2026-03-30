@@ -3,8 +3,6 @@ import base64
 import requests
 from requests.auth import HTTPBasicAuth
 
-from src.const import STATUS as ST
-
 
 class JiraAPI:
     """classe responsável pelo controle da API do Jira"""
@@ -13,7 +11,6 @@ class JiraAPI:
         self.domain = domain
         self.api_token = api_token
         self.email = email
-        self._status = ST.ONGOING
 
     def _get_token(self) -> str:
         """Encode the email and apiToken to base 64 and return as token
