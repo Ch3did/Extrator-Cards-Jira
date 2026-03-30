@@ -1,126 +1,151 @@
-# Animated Bassoon - Extrator de Dados do Jira (86f1a13 - satable version)
+# Animated Bassoon - Extrator de Dados do Jira
 
-O Animated Bassoon é uma aplicação Python desenvolvida para extrair dados do Jira, permitindo que você obtenha informações de projetos, sprints e issues diariamente e as armazene em um banco de dados para análise de produtividade das equipes.
+O Animated Bassoon é uma aplicação Python desenvolvida para extrair dados do Jira, permitindo que você obtenha informações de projetos, sprints e issues e as armazene no Elasticsearch para análise de produtividade das equipes via Kibana.
 
-## Funcionalidades Principais:
+## Funcionalidades Principais
 
-- Extrai dados de boards (projetos), sprints e issues (cards) do Jira.
-- Armazena os dados em um banco de dados para análise posterior.
-- Calcula leadtime e evolution leadtime a partir dos dados extraídos do Jira.
-- Gera um gráfico representando o leadtime e evolution leadtime.
-- Salva a imagem do gráfico no serviço de armazenamento S3.
+- Extrai dados de boards, sprints e issues (cards) do Jira
+- Armazena os dados no Elasticsearch para análise e visualização
+- Registra o histórico completo de mudanças de cada issue (status, board, sprint, assignee, etc.)
 
-## Pré-requisitos:
+## Pré-requisitos
 
-- Python instalado.
-- Pip instalado.
+- Python instalado
+- Docker e Docker Compose instalados
 
-## Configuração:
+## Configuração
 
-Durante a execução do código, um arquivo chamado .env será criado. Caso não seja alterado o nome da variável database_url neste arquivo, o nome do banco de dados será `"test_app.db"` e ele estará localizado no diretório `.tmp`.
+Crie um arquivo `.env` na raiz do projeto, utilizando como base o arquivo `env.config` com as seguintes variáveis de ambiente setadas:
 
-## Instalação:
+```env
+api_token=seu_token_jira ("https://id.atlassian.com/manage-profile/security/api-tokens")
+email=seu_email_jira
+domain=https://sua-empresa.atlassian.net
 
-Para instalar o Animated Bassoon, execute o seguinte comando:
-
+elastic_host=localhost
+elastic_port=9200
 ```
-make install
+
+## Uso
+
+### Subindo a infraestrutura
+
+Para subir o Elasticsearch e o Kibana:
+
+```bash
+docker compose up -d elasticsearch kibana
 ```
 
-## Uso:
+Aguarde o Elasticsearch estar saudável antes de rodar a aplicação:
 
-Para executar o Animated Bassoon, utilize o seguinte comando:
-
+```bash
+curl http://localhost:9200
 ```
+
+### Executando o extrator
+
+```bash
 make run
 ```
 
-### Observações:
+### Acessando o Kibana
 
-Certifique-se de configurar corretamente as credenciais do Jira no arquivo .env antes de executar a aplicação.
+Após a extração, acesse o Kibana em `http://localhost:5601` para visualizar os dados nos índices:
 
-## Objetos criados e suas estruturas
+- `jira_issues` — issues com board e histórico de mudanças embutidos
+- `jira_sprints` — sprints com métricas agregadas
 
-### Board
+## Arquitetura
 
-| Nome do Campo       | Tipo de Dado        | Descrição                          |
-| ------------------- | ------------------- | ---------------------------------- |
-| id                  | int (Opcional)      | Chave primária da tabela           |
-| board_id            | int                 | ID do board                        |
-| board_name          | str                 | Nome do board                      |
-| board_url           | str                 | URL do board                       |
-| board_type          | str                 | Tipo do board                      |
-| colected_time_stemp | datetime (Opcional) | Timestamp de coleta (com timezone) |
+```
+ExtractView  →  Elasticsearch  →  Kibana
+                    
+```
 
-### Changelog
+- **service/** — comunicação com a API do Jira
+- **controller/** — orquestração da extração e paginação
+- **infra/mappers/** — transformação dos dados do Jira para os models internos
+- **infra/models/** — tipagem dos documentos (`Ticket`, `Sprint`, `ChangeHistory`)
+- **infra/elastic_client.py** — comunicação com o Elasticsearch
 
-| Nome do Campo       | Tipo de Dado        | Descrição                          |
-| ------------------- | ------------------- | ---------------------------------- |
-| id                  | int (Opcional)      | Chave primária da tabela           |
-| issue_id            | int                 | ID do issue associado ao changelog |
-| change_id           | int                 | ID da mudança                      |
-| creator             | str                 | Criador da mudança                 |
-| change_date         | datetime            | Data da mudança                    |
-| change_field        | str                 | Campo alterado                     |
-| old_value           | str (Opcional)      | Valor antigo                       |
-| new_value           | str (Opcional)      | Novo valor                         |
-| colected_time_stemp | datetime (Opcional) | Timestamp de coleta (com timezone) |
+## Histórico de Arquitetura
 
-### Issue
+### Versão anterior
 
-| Nome do Campo               | Tipo de Dado        | Descrição                              |
-| --------------------------- | ------------------- | -------------------------------------- |
-| id                          | int (Opcional)      | Chave primária da tabela               |
-| issue_id                    | int                 | ID do issue                            |
-| board_id                    | int                 | ID do board associado ao issue         |
-| expand                      | str                 | Expandir                               |
-| status                      | str                 | Status do issue                        |
-| self_url                    | str                 | URL do issue                           |
-| key                         | str                 | Chave do issue                         |
-| issue_type                  | str                 | Tipo do issue                          |
-| issue_type_id               | str                 | ID do tipo de issue                    |
-| summary                     | str                 | Resumo do issue                        |
-| priority_name               | str                 | Nome da prioridade                     |
-| epic_id                     | int (Opcional)      | ID do épico associado ao issue         |
-| epic_key                    | str (Opcional)      | Chave do épico associado ao issue      |
-| epic_name                   | str (Opcional)      | Nome do épico associado ao issue       |
-| epic_summary                | str (Opcional)      | Resumo do épico associado ao issue     |
-| sprint                      | str (Opcional)      | Sprint associada ao issue              |
-| work_ratio                  | int (Opcional)      | Razão de trabalho                      |
-| reporter_name               | str (Opcional)      | Nome do reporter                       |
-| reportar_mail               | str (Opcional)      | E-mail do reporter                     |
-| creators_name               | str (Opcional)      | Nome do criador                        |
-| creators_mail               | str (Opcional)      | E-mail do criador                      |
-| progress                    | str (Opcional)      | Progresso                              |
-| status_category_change_date | datetime (Opcional) | Data da mudança de categoria de status |
-| timespent                   | datetime (Opcional) | Tempo gasto                            |
-| resolution_date             | datetime (Opcional) | Data de resolução                      |
-| creation_date               | datetime (Opcional) | Data de criação                        |
-| closed_sprint               | str (Opcional)      | Sprint fechada                         |
-| colected_time_stemp         | datetime (Opcional) | Timestamp de coleta (com timezone)     |
+O projeto nasceu com uma arquitetura centrada em banco de dados relacional e métricas pré-calculadas.
 
-### Sprint
+O fluxo original funcionava assim:
 
-| Nome do Campo       | Tipo de Dado        | Descrição                          |
-| ------------------- | ------------------- | ---------------------------------- |
-| id                  | int (Opcional)      | Chave primária da tabela           |
-| sprint_id           | int                 | ID da sprint                       |
-| status              | str                 | Status da sprint                   |
-| self_url            | str                 | URL da sprint                      |
-| sprint_name         | str                 | Nome da sprint                     |
-| origin_board        | int                 | Board de origem da sprint          |
-| start_date          | datetime (Opcional) | Data de início da sprint           |
-| resolution_date     | datetime (Opcional) | Data de resolução da sprint        |
-| created_date        | datetime (Opcional) | Data de criação da sprint          |
-| end_date            | datetime (Opcional) | Data de término da sprint          |
-| colected_time_stemp | datetime (Opcional) | Timestamp de coleta (com timezone) |
+```
+Jira API  →  Extrator  →  SQLite/Postgres  →  Cálculo de métricas  →  S3 (AWS)
+```
 
-## Contribuição:
+Os dados eram extraídos do Jira e persistidos em tabelas relacionais separadas — `board`, `sprint`, `issue` e `changelog` — usando SQLModel como ORM. Após a extração, a aplicação calculava automaticamente o **leadtime** e o **evolution leadtime**, gerava um gráfico e enviava a imagem para um bucket S3 na AWS.
+
+Essa abordagem tinha limitações claras: as métricas eram fixas e definidas pelo código. Qualquer nova visualização ou corte diferente dos dados exigia uma alteração no código, um novo deploy e um novo envio para o S3. O usuário final não tinha controle sobre como queria ver os dados.
+
+### Versão atual
+
+A arquitetura foi refatorada para desacoplar a extração da visualização, dando autonomia total ao usuário para explorar os dados.
+
+```
+Jira API  →  Extrator  →  Elasticsearch  →  Kibana
+```
+
+Os dados agora são armazenados no Elasticsearch em dois índices desnormalizados — `jira_issues` e `jira_sprints` — com o histórico completo de mudanças de cada issue embutido no próprio documento. Isso elimina a necessidade de JOINs e torna cada documento autocontido.
+
+O Kibana substitui o pipeline de métricas fixas e o S3. Em vez de receber imagens estáticas geradas pelo código, o usuário acessa um dashboard interativo onde pode criar suas próprias visualizações, filtrar por board, sprint, período, tipo de issue, responsável e qualquer outro campo disponível — sem precisar tocar no código.
+
+Métricas como **leadtime**, **cycle time**, **velocity**, **throughput** e **CFD** passam a ser configuráveis diretamente no Kibana, adaptadas à realidade de cada time.
+
+**A versão antiga estará disponível na branch `project/old-version` caso desejem vizualiza-la.**
+
+
+## Estrutura dos documentos
+
+### jira_issues
+
+| Campo | Tipo | Descrição |
+| --- | --- | --- |
+| issue_id | int | ID do issue |
+| key | str | Chave do issue (ex: PROJ-123) |
+| status | str | Status atual |
+| summary | str | Título do issue |
+| issue_type | str | Tipo do issue |
+| priority_name | str | Prioridade |
+| board.id | int | ID do board |
+| board.name | str | Nome do board |
+| assignee.name | str | Nome do responsável |
+| reporter.name | str | Nome do reporter |
+| epic.key | str | Chave do épico |
+| current_sprints | str | Sprint atual |
+| belonged_sprint | str | Última sprint fechada |
+| resolution_date | str | Data de resolução |
+| creation_date | str | Data de criação |
+| deleted | bool | Indica se o card foi deletado |
+| changelog | array | Histórico de mudanças |
+| changelog[].change_field | str | Campo alterado (status, board, sprint...) |
+| changelog[].old_value | str | Valor anterior |
+| changelog[].new_value | str | Novo valor |
+| changelog[].change_timestamp | str | Data e hora da mudança |
+
+### jira_sprints
+
+| Campo | Tipo | Descrição |
+| --- | --- | --- |
+| sprint_id | int | ID da sprint |
+| sprint_name | str | Nome da sprint |
+| status | str | Status (active, closed, future) |
+| origin_board | int | ID do board de origem |
+| start_date | str | Data de início |
+| end_date | str | Data de término |
+| resolution_date | str | Data de conclusão |
+| created_date | str | Data de criação |
+
+## Contribuição
 
 Contribuições são bem-vindas! Sinta-se à vontade para enviar pull requests e reportar problemas.
 
-## Licença:
+## Licença
 
 Este projeto é licenciado sob a MIT License.
-
-Nota: Certifique-se de substituir os valores de database_url e test_app.db conforme necessário, de acordo com sua configuração.

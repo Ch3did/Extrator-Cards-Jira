@@ -1,13 +1,9 @@
 import base64
 
 import requests
+from requests.auth import HTTPBasicAuth
 
 from src.const import STATUS as ST
-from src.controller.factory.objects.board import BoardController
-from src.controller.factory.objects.changelog import ChangelogController
-from src.controller.factory.objects.deleted_cards import DeletedCards
-from src.controller.factory.objects.issue import IssueController
-from src.controller.factory.objects.sprint import SprintController
 
 
 class JiraAPI:
@@ -17,11 +13,6 @@ class JiraAPI:
         self.domain = domain
         self.api_token = api_token
         self.email = email
-        self.board = BoardController()
-        self.issue = IssueController()
-        self.sprint = SprintController()
-        self.changelog = ChangelogController()
-        self.deleted_cards = DeletedCards()
         self._status = ST.ONGOING
 
     def _get_token(self) -> str:
@@ -37,19 +28,26 @@ class JiraAPI:
         return f"Basic {base64_string}"
 
     def _make_headers(self) -> dict:
-        return {"Authorization": f"{self._get_token()}"}
+        return {"Accept": "application/json"}
 
     def _make_params(self, page: int) -> dict:
         results = 100
         return {
-            "startAt": f"{page*results}",
-            "maxResults": f"{results}",
+            "startAt": page * results,
+            "maxResults": results,
         }
 
     def _make_request(self, url: str, page: int = 0) -> dict:
         headers = self._make_headers()
         params = self._make_params(page)
-        response = requests.get(url, headers=headers, params=params)
+
+        response = requests.get(
+            url,
+            headers=headers,
+            params=params,
+            auth=HTTPBasicAuth(self.email, self.api_token),
+        )
+
         response.raise_for_status()
         return response.json()
 

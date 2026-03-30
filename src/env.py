@@ -12,7 +12,6 @@ COMPANY_NAME = DOMAIN[8:-10].replace(".atlassian", "")
 DATABASE_URL = f"sqlite:///tmp/{COMPANY_NAME}.db"
 DEBUG = os.environ.get("debug")
 
-# AWS variables
-ACCESS_KEY_ID = os.environ.get("access_key_id")
-SECRET_ACCESS_KEY = os.environ.get("secret_access_key")
-BUCKET = os.environ.get("bucket_name")
+# Elasticsearch
+ELASTIC_HOST = os.environ.get("elastic_host", "localhost")
+ELASTIC_PORT = int(os.environ.get("elastic_port", 9200))
