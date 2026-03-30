@@ -1,0 +1,70 @@
+import base64
+
+import requests
+from requests.auth import HTTPBasicAuth
+
+from src.const import STATUS as ST
+
+
+class JiraAPI:
+    """classe responsável pelo controle da API do Jira"""
+
+    def __init__(self, domain, api_token, email):
+        self.domain = domain
+        self.api_token = api_token
+        self.email = email
+        self._status = ST.ONGOING
+
+    def _get_token(self) -> str:
+        """Encode the email and apiToken to base 64 and return as token
+
+        Returns:
+            str: Authentication token string
+        """
+        string = f"{self.email}:{self.api_token}"
+        sample_string_bytes = string.encode("ascii")
+        base64_bytes = base64.b64encode(sample_string_bytes)
+        base64_string = base64_bytes.decode("ascii")
+        return f"Basic {base64_string}"
+
+    def _make_headers(self) -> dict:
+        return {"Accept": "application/json"}
+
+    def _make_params(self, page: int) -> dict:
+        results = 100
+        return {
+            "startAt": page * results,
+            "maxResults": results,
+        }
+
+    def _make_request(self, url: str, page: int = 0) -> dict:
+        headers = self._make_headers()
+        params = self._make_params(page)
+
+        response = requests.get(
+            url,
+            headers=headers,
+            params=params,
+            auth=HTTPBasicAuth(self.email, self.api_token),
+        )
+
+        response.raise_for_status()
+        return response.json()
+
+    def _get_boards_info(self, page: int) -> dict:
+        return self._make_request(f"{self.domain}agile/1.0/board/", page)
+
+    def _get_issues_info(self, board_id: int, page: int) -> dict:
+        return self._make_request(
+            f"{self.domain}agile/1.0/board/{board_id}/issue", page
+        )
+
+    def _get_sprints_info(self, board_id, page: int) -> dict:
+        return self._make_request(
+            f"{self.domain}agile/1.0/board/{board_id}/sprint", page
+        )
+
+    def _get_changelog_info(self, issue_id: dict, page: int) -> dict:
+        return self._make_request(
+            f"{self.domain}api/3/issue/{issue_id}/changelog", page
+        )

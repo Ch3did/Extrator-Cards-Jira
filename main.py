@@ -2,30 +2,27 @@ import traceback
 
 from loguru import logger
 
-from src.const import STATUS as ST
-from src.env import API_TOKEN, DOMAIN, EMAIL
-from src.process.build_wheel import BuildView
-from src.process.extract import ExtractView
+from src.controller.extract_view import ExtractView
+from src.env import API_TOKEN, DOMAIN, ELASTIC_HOST, ELASTIC_PORT, EMAIL
+from src.infra.elastic_client import ElasticClient
+from src.service.jira_api import JiraAPI
 
 
 def run():
-    exctract = ExtractView(domain=DOMAIN, api_token=API_TOKEN, email=EMAIL)
-    build = BuildView()
+    jira = JiraAPI(domain=DOMAIN, api_token=API_TOKEN, email=EMAIL)
+    elastic = ElasticClient(host=ELASTIC_HOST, port=ELASTIC_PORT)
+    extract = ExtractView(jira=jira, elastic=elastic)
+
     try:
-        exctract.process()
-        build.process_leadtime()
-        build.process_velocity()
+        logger.info("Staring Extraction...")
+        extract.process()
+
     except Exception as error:
-        logger.error(error)
-        msg = traceback.format_exc()
-        logger.error(msg)
-        if exctract._status == ST.ONGOING:
-            exctract._status = ST.FAIL
-        else:
-            build._status = ST.FAIL
+        logger.error(f"Unexpected error: {error}")
+        logger.error(traceback.format_exc())
+
     finally:
-        logger.info(f"Extract Status: {exctract._status}")
-        logger.info(f"Build Status: {build._status}")
+        logger.info("Extraction finished sucessfully!")
 
 
 if __name__ == "__main__":
