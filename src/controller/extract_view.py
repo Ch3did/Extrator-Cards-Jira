@@ -43,11 +43,12 @@ class ExtractView:
 
     def _get_sprints(self, board: dict) -> None:
         logger.info(f"Getting sprints for board {board.get("name")}...")
-        board_id = board.get("id")
-        for page in self._paginate(self.jira._get_sprints_info, board_id):
-            for sprint_data in page["values"]:
-                sprint = sprint_mapper.to_sprint(sprint_data, board_id)
-                self.elastic.index_sprint(sprint)
+        if board.get("type") == 'scrum': 
+            board_id = board.get("id")
+            for page in self._paginate(self.jira._get_sprints_info, board_id):
+                for sprint_data in page["values"]:
+                    sprint = sprint_mapper.to_sprint(sprint_data, board_id)
+                    self.elastic.index_sprint(sprint)
 
     def _get_issues(self, board: dict) -> None:
         logger.info(f"Getting issues for board {board.get("name")}...")
