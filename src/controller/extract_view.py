@@ -74,8 +74,17 @@ class ExtractView:
 
     def process(self) -> None:
         boards = self._get_boards()
+
         for board in boards:
-            logger.info(f"Processing board {board.get("name")}...")
-            self._get_sprints(board)
-            self._get_issues(board)
+            try:
+                logger.info(f"Processing board {board.get('name')}...")
+                self._get_sprints(board)
+                self._get_issues(board)
+
+            except Exception as e:
+                logger.error(
+                    f"Error processing board {board.get('id')} | {str(e)}"
+                )
+                continue
+
         logger.info("Finish data extract!")
