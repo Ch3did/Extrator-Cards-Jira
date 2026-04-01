@@ -55,6 +55,10 @@ Após a extração, acesse o Kibana em `http://localhost:5601` para visualizar o
 - `jira_issues` — issues com board e histórico de mudanças embutidos
 - `jira_sprints` — sprints com métricas agregadas
 
+### Queries no Kibana
+
+> Dentro do diretório `docs/` há um documento com queries básicas para buscar dados específicos dos índices `jira_issues` e `jira_sprints`.
+
 ## Arquitetura
 
 ```
